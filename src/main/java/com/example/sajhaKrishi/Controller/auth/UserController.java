@@ -1,4 +1,4 @@
-package com.example.sajhaKrishi.Controller;
+package com.example.sajhaKrishi.Controller.auth;
 
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Services.UserService;
@@ -27,27 +27,22 @@ public class UserController {
 
     @GetMapping("/")
     public String greet(HttpServletRequest request){
-        return " Hello from the pratik \n"+ request.getSession().getId();
+        return " Hello from the pratik portal \n"+ request.getSession().getId();
     }
 
     @PostMapping("/registers")
     public ResponseEntity<String> Register(@RequestBody User u){
-        User user = repo.findByEmail(u.getEmail());
-        System.out.println(user);
-        if (user == null){
-            String encryptedPwd = bcrypt.encode(u.getPassword());
-            u.setPassword(encryptedPwd);
-            repo.save(u);
-            return ResponseEntity.ok("User registered successfully");
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+        return service.registerUser(u);
     }
-
     @PostMapping("/userLogin")
     public String userLogin(@RequestBody User user) {
         System.out.println("Login attempt for user: " + user.getEmail());
         return service.verify(user);
+    }
+
+    @GetMapping("/kyc")
+    public String kycDetails(){
+        return "kyc details";
     }
 
 }

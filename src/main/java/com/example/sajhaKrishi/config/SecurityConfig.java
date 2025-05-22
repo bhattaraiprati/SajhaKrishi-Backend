@@ -28,10 +28,10 @@ public class SecurityConfig {
 
         http.csrf(customizer -> customizer.disable());
 //        http.authorizeHttpRequests(auth -> auth
-//                .requestMatchers("/registers", "/userLogin").permitAll() // Public endpoints
+//                .requestMatchers("/registers", "/userLogin", "/buyerKyc").permitAll() // Public endpoints
 //                .anyRequest().authenticated());
         // yeslay chahe harek request authenticate huna parxa bhanxa
-//        http.formLogin(Customizer.withDefaults());
+        http.formLogin(Customizer.withDefaults());
         http.formLogin(form -> form.disable());
         http.httpBasic(Customizer.withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

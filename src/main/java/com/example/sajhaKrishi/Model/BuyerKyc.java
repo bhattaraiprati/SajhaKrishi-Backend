@@ -31,7 +31,6 @@ public class BuyerKyc {
 
     private String panCardImagePath;
 
-    private Boolean isBusinessUser;
 
     public long getId() {
         return id;
@@ -175,14 +174,6 @@ public class BuyerKyc {
 
     public void setPanCardImagePath(String panCardImagePath) {
         this.panCardImagePath = panCardImagePath;
-    }
-
-    public Boolean getBusinessUser() {
-        return isBusinessUser;
-    }
-
-    public void setBusinessUser(Boolean businessUser) {
-        isBusinessUser = businessUser;
     }
 }
 

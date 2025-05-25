@@ -35,14 +35,9 @@ public class UserController {
         return service.registerUser(u);
     }
     @PostMapping("/userLogin")
-    public String userLogin(@RequestBody User user) {
+    public ResponseEntity<?> userLogin(@RequestBody User user) {
         System.out.println("Login attempt for user: " + user.getEmail());
         return service.verify(user);
-    }
-
-    @GetMapping("/kyc")
-    public String kycDetails(){
-        return "kyc details";
     }
 
 }

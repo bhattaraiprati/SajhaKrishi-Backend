@@ -27,7 +27,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String verify(User user) {
+    public ResponseEntity<?> verify(User user) {
         try {
             // Create authentication token with provided credentials
             UsernamePasswordAuthenticationToken authToken =
@@ -38,16 +38,19 @@ public class UserService {
 
             if (auth.isAuthenticated()) {
                 // You might want to generate a JWT token here
-                return jwtService.generateToken(user.getEmail(), user.getName());
+                String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getId());
+                return ResponseEntity.ok(token);
             } else {
-                return "Authentication failed";
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+
             }
         } catch (BadCredentialsException e) {
-            return "Invalid email or password";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         } catch (Exception e) {
             // Log the exception for debugging
             e.printStackTrace();
-            return "Authentication error: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authentication error: "+ e.getMessage());
+//            return "Authentication error: " + e.getMessage();
         }
     }
 
@@ -57,7 +60,6 @@ public class UserService {
         if (existingUser != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
         }
-
         // Encode password and save user
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
@@ -65,6 +67,5 @@ public class UserService {
 
         return ResponseEntity.ok("User registered successfully");
     }
-
 
 }

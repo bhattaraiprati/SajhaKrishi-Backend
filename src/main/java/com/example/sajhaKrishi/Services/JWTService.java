@@ -26,18 +26,18 @@ public class JWTService {
         }
     }
 
-    public String generateToken(String email, String name) {
+    public String generateToken(String email, String name, Long id) {
 
         Map<String, Object> claims = new HashMap<>();
+
         claims.put("name", name);
+        claims.put("id", id);
 
         return Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 10))
-                .and()
+                .setClaims(claims)                     // ✅ Set custom claims
+                .setSubject(email)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 10))
                 .signWith(getKey())
                 .compact();
 //        return "sw4387nfdjf398398nrwnr3u38";

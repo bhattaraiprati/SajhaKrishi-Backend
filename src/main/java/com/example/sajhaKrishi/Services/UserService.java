@@ -35,10 +35,11 @@ public class UserService {
 
             // Authenticate using the AuthenticationManager
             Authentication auth = authManager.authenticate(authToken);
+            User u = userRepo.findByEmail(user.getEmail());
+            System.out.println("printing the user: "+ u);
 
             if (auth.isAuthenticated()) {
-                // You might want to generate a JWT token here
-                String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getId());
+                String token = jwtService.generateToken(u.getEmail(), u.getName(), u.getId(), u.getRole());
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");

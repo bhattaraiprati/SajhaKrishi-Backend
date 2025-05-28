@@ -23,6 +23,7 @@ public class User {
     private Long number;
     private String email;
     private String password;
+    private  String role;
 
 //    public long getId() {
 //        return id;

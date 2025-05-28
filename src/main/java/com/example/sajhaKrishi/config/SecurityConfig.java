@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.config;
 
+import com.example.sajhaKrishi.Services.JWTService;
 import com.example.sajhaKrishi.repository.UserRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,29 +11,40 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JWTService jwtService;
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(JWTService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(customizer -> customizer.disable());
-//        http.authorizeHttpRequests(auth -> auth
-//                .requestMatchers("/registers", "/userLogin", "/buyerKyc").permitAll() // Public endpoints
-//                .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/registers", "/userLogin").permitAll() // Public endpoints
+                .anyRequest().authenticated())
+                .addFilterBefore(
+                        new JwtAuthFilter(jwtService, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class
+                );
         // yeslay chahe harek request authenticate huna parxa bhanxa
-        http.formLogin(Customizer.withDefaults());
-        http.formLogin(form -> form.disable());
+//        http.formLogin(Customizer.withDefaults());
+//        http.formLogin(form -> form.disable());
         http.httpBasic(Customizer.withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
@@ -48,26 +60,6 @@ public class SecurityConfig {
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(UserRepo userRepo) {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                // Make sure to import your User model class
-                com.example.sajhaKrishi.Model.User user = userRepo.findByEmail(username);
-                if (user == null) {
-                    throw new UsernameNotFoundException("User not found with email: " + username);
-                }
-
-                return org.springframework.security.core.userdetails.User
-                        .withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .roles("USER")
-                        .build();
-            }
-        };
     }
 
     @Bean

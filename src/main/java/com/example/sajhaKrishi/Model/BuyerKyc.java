@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class BuyerKyc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +17,7 @@ public class BuyerKyc {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")  // This is the only mapping needed for the foreign key
+    @JsonIgnoreProperties({"farmerKyc", "buyerKyc"})
     private User user;
 
     private String fullName;

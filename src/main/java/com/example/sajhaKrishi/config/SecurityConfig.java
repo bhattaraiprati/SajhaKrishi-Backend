@@ -37,6 +37,7 @@ public class SecurityConfig {
         http.csrf(customizer -> customizer.disable());
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/registers", "/userLogin").permitAll() // Public endpoints
+                .requestMatchers("/api/products/add").authenticated()
                 .anyRequest().authenticated())
                 .addFilterBefore(
                         new JwtAuthFilter(jwtService, userDetailsService),

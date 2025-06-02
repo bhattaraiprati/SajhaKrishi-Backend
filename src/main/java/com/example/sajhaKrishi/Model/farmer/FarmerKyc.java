@@ -1,6 +1,7 @@
 package com.example.sajhaKrishi.Model.farmer;
 
 import com.example.sajhaKrishi.Model.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FarmerKyc {
 
     @Id
@@ -16,6 +18,7 @@ public class FarmerKyc {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"farmerKyc", "buyerKyc"})
     private User user;
 
     // Page 1: Personal & Identity Details

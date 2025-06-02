@@ -1,6 +1,7 @@
 package com.example.sajhaKrishi.Model;
 
 import com.example.sajhaKrishi.Model.farmer.FarmerKyc;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +25,11 @@ public class User {
     private  String role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
     private BuyerKyc buyerKyc;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
     private FarmerKyc farmerKyc;
 
     // Helper methods

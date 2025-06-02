@@ -9,10 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/farmer")
 public class FarmerController {
 
     @Autowired
     private FarmerService farmerService;
+
+
 
     @PostMapping("/farmerKyc")
     public ResponseEntity<?> FarmerKyc(@RequestBody FarmerKyc farmerKyc, Authentication authentication){

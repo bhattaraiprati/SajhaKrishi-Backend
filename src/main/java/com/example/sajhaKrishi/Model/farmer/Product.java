@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +31,7 @@ public class Product {
     })
     private User user;
 
-    private Date date;
+    private LocalDate date;
     private String status;
 
     private String name;
@@ -37,17 +42,24 @@ public class Product {
     private Integer price;
     private Integer minimumOrderQuantity;
     private Integer discountPrice;
-    @ElementCollection
-    @CollectionTable(name = "product_delivery_options", joinColumns = @JoinColumn(name = "product_id"))
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "product_delivery_options",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+    @Column(name = "delivery_option")
     private List<String> deliveryOption;
 
     private String deliveryTime;
-    @ElementCollection
-    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "product_images",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
     private List<String> imagePaths;
     private Boolean available;  // true if available for sale
-    private Date harvestDate;   // when it was harvested (for freshness)
-    private Date expiryDate;
+    private String harvestDate;   // when it was harvested (for freshness)
+    private String expiryDate;
 
 
 }

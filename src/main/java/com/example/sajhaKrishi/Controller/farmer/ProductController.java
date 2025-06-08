@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.Controller.farmer;
 
+import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.Services.farmer.ProductService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class ProductController {
 
     private final ProductService productService;
@@ -23,24 +24,49 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+//    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
+@PostMapping("/farmer/addProduct")
+public ResponseEntity<ProductDTO> createProduct(
+        @RequestBody ProductDTO productDTO,
+        Authentication authentication
+) {
+    // Get user email from JWT token
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    String email = userDetails.getUsername();
 
-    @PostMapping("/add")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product, Authentication authentication) {
+    Product savedProduct = productService.saveProduct(productDTO, email);
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
+    // Convert entity back to DTO
+    ProductDTO savedDTO = new ProductDTO();
+    savedDTO.setId(savedProduct.getId());
+    savedDTO.setUserId(savedProduct.getUser().getId());
+    savedDTO.setDate(savedProduct.getDate());
+    savedDTO.setStatus(savedProduct.getStatus());
+    savedDTO.setName(savedProduct.getName());
+    savedDTO.setCategory(savedProduct.getCategory());
+    savedDTO.setDescription(savedProduct.getDescription());
+    savedDTO.setQuantity(savedProduct.getQuantity());
+    savedDTO.setUnitOfMeasurement(savedProduct.getUnitOfMeasurement());
+    savedDTO.setPrice(savedProduct.getPrice());
+    savedDTO.setMinimumOrderQuantity(savedProduct.getMinimumOrderQuantity());
+    savedDTO.setDiscountPrice(savedProduct.getDiscountPrice());
+    savedDTO.setDeliveryOption(savedProduct.getDeliveryOption());
+    savedDTO.setDeliveryTime(savedProduct.getDeliveryTime());
+    savedDTO.setImagePaths(savedProduct.getImagePaths());
+    savedDTO.setAvailable(savedProduct.getAvailable());
+    savedDTO.setHarvestDate(savedProduct.getHarvestDate());
+    savedDTO.setExpiryDate(savedProduct.getExpiryDate());
 
-        Product savedProduct = productService.saveProduct(product, email);
-        return ResponseEntity.ok(savedProduct);
-    }
+    return ResponseEntity.ok(savedDTO);
+}
 
-    @GetMapping
+    @GetMapping("/api/getAll")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
         Product product = productService.getProductById(id);
         if (product != null) {

@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.Services.farmer;
 
+import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.repository.ProductRepository;
@@ -7,6 +8,7 @@ import com.example.sajhaKrishi.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -23,22 +25,34 @@ public class ProductService {
     @Autowired
     UserRepo userRepo;
 
-    public Product saveProduct(Product product, String email) {
-        // Set default values if needed
-
+    public Product saveProduct(ProductDTO productDTO, String email) {
+        // Get user from email (extracted from JWT token)
         User user = userRepo.findByEmail(email);
-        if (product.getDate() == null) {
-            product.setDate(new Date());
-        }
-        if (product.getStatus() == null) {
-            product.setStatus("Active"); // or whatever default status you want
-        }
-        if (product.getAvailable() == null) {
-            product.setAvailable(true);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
         }
 
-        // Associate the product with the user
+        // Map DTO to Entity
+        Product product = new Product();
         product.setUser(user);
+        product.setDate(productDTO.getDate() != null ? productDTO.getDate() : LocalDate.now()
+        );
+        product.setStatus(productDTO.getStatus() != null ? productDTO.getStatus() : "Active");
+        product.setAvailable(productDTO.getAvailable() != null ? productDTO.getAvailable() : true);
+        product.setName(productDTO.getName());
+        product.setCategory(productDTO.getCategory());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+        product.setUnitOfMeasurement(productDTO.getUnitOfMeasurement());
+        product.setPrice(productDTO.getPrice());
+        product.setMinimumOrderQuantity(productDTO.getMinimumOrderQuantity());
+        product.setDiscountPrice(productDTO.getDiscountPrice());
+        product.setDeliveryOption(productDTO.getDeliveryOption());
+        product.setDeliveryTime(productDTO.getDeliveryTime());
+        product.setImagePaths(productDTO.getImagePaths());
+        product.setHarvestDate(productDTO.getHarvestDate());
+        product.setExpiryDate(productDTO.getExpiryDate());
 
         return productRepository.save(product);
     }

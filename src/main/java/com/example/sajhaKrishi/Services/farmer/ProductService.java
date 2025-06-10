@@ -68,25 +68,55 @@ public class ProductService {
     }
 
     // Method to update a product
-    public Product updateProduct(String id, Product productDetails) {
+    public Product updateProduct(String id, ProductDTO productDetails) {
         Product existingProduct = productRepository.findById(id).orElse(null);
         if (existingProduct != null) {
-            // Update all fields except ID and user
-            existingProduct.setName(productDetails.getName());
-            existingProduct.setCategory(productDetails.getCategory());
-            existingProduct.setDescription(productDetails.getDescription());
-            existingProduct.setQuantity(productDetails.getQuantity());
-            existingProduct.setUnitOfMeasurement(productDetails.getUnitOfMeasurement());
-            existingProduct.setPrice(productDetails.getPrice());
-            existingProduct.setMinimumOrderQuantity(productDetails.getMinimumOrderQuantity());
-            existingProduct.setDiscountPrice(productDetails.getDiscountPrice());
-            existingProduct.setDeliveryOption(productDetails.getDeliveryOption());
-            existingProduct.setDeliveryTime(productDetails.getDeliveryTime());
-            existingProduct.setImagePaths(productDetails.getImagePaths());
-            existingProduct.setAvailable(productDetails.getAvailable());
-            existingProduct.setHarvestDate(productDetails.getHarvestDate());
-            existingProduct.setExpiryDate(productDetails.getExpiryDate());
-            existingProduct.setStatus(productDetails.getStatus());
+            // Only update fields that are not null
+            if (productDetails.getName() != null) {
+                existingProduct.setName(productDetails.getName());
+            }
+            if (productDetails.getCategory() != null) {
+                existingProduct.setCategory(productDetails.getCategory());
+            }
+            if (productDetails.getDescription() != null) {
+                existingProduct.setDescription(productDetails.getDescription());
+            }
+            if (productDetails.getQuantity() != null) {
+                existingProduct.setQuantity(productDetails.getQuantity());
+            }
+            if (productDetails.getUnitOfMeasurement() != null) {
+                existingProduct.setUnitOfMeasurement(productDetails.getUnitOfMeasurement());
+            }
+            if (productDetails.getPrice() != null) {
+                existingProduct.setPrice(productDetails.getPrice());
+            }
+            if (productDetails.getMinimumOrderQuantity() != null) {
+                existingProduct.setMinimumOrderQuantity(productDetails.getMinimumOrderQuantity());
+            }
+            if (productDetails.getDiscountPrice() != null) {
+                existingProduct.setDiscountPrice(productDetails.getDiscountPrice());
+            }
+            if (productDetails.getDeliveryOption() != null) {
+                existingProduct.setDeliveryOption(productDetails.getDeliveryOption());
+            }
+            if (productDetails.getDeliveryTime() != null) {
+                existingProduct.setDeliveryTime(productDetails.getDeliveryTime());
+            }
+            if (productDetails.getImagePaths() != null) {
+                existingProduct.setImagePaths(productDetails.getImagePaths());
+            }
+            if (productDetails.getAvailable() != null) {
+                existingProduct.setAvailable(productDetails.getAvailable());
+            }
+            if (productDetails.getHarvestDate() != null) {
+                existingProduct.setHarvestDate(productDetails.getHarvestDate());
+            }
+            if (productDetails.getExpiryDate() != null) {
+                existingProduct.setExpiryDate(productDetails.getExpiryDate());
+            }
+            if (productDetails.getStatus() != null) {
+                existingProduct.setStatus(productDetails.getStatus());
+            }
 
             return productRepository.save(existingProduct);
         }
@@ -104,5 +134,27 @@ public class ProductService {
 
     public List<Product> getAvailableProducts() {
         return productRepository.findByAvailable(true);
+    }
+
+    public List<Product> getProductsByCategory(String category, String email) {
+        User farmer = userRepo.findByEmail(email);
+        if(farmer == null){
+            new RuntimeException("User not found");
+        }
+
+        return "All".equalsIgnoreCase(category)
+                ? productRepository.findByUser(farmer)
+                : productRepository.findByUserIdAndCategory(farmer.getId(), category);
+    }
+
+    public List<Product> getProductsByStatus(String status, String email) {
+        User farmer = userRepo.findByEmail(email);
+        if(farmer == null){
+            new RuntimeException("User not found");
+        }
+
+        return "All".equalsIgnoreCase(status)
+                ? productRepository.findByUser(farmer)
+                : productRepository.findByUserIdAndStatus(farmer.getId(), status);
     }
 }

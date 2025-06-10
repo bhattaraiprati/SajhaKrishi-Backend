@@ -4,8 +4,10 @@ import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.Services.farmer.ProductService;
+import com.example.sajhaKrishi.repository.UserRepo;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,10 +21,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final UserRepo userRepository;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, UserRepo userRepository) {
         this.productService = productService;
+        this.userRepository = userRepository;
     }
 //    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
 @PostMapping("/farmer/addProduct")
@@ -75,9 +79,46 @@ public ResponseEntity<ProductDTO> createProduct(
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/farmer/products/category/{category}")
+    public ResponseEntity<?> getProductByCategory(
+            @PathVariable String category,
+            Authentication authentication) {
+
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+
+            List<Product> products = productService.getProductsByCategory(category, email);
+
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving products: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/farmer/products/status/{status}")
+    public ResponseEntity<?> getProductByStatus(
+            @PathVariable String status,
+            Authentication authentication) {
+
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+
+            List<Product> products = productService.getProductsByStatus(status, email);
+
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving products: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping("/farmer/product/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable String id,
-                                                 @RequestBody Product productDetails) {
+                                                 @RequestBody ProductDTO productDetails, Authentication authentication) {
+
         Product updatedProduct = productService.updateProduct(id, productDetails);
         if (updatedProduct != null) {
             return ResponseEntity.ok(updatedProduct);

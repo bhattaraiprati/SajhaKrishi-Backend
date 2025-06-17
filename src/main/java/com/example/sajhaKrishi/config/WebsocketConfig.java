@@ -1,6 +1,5 @@
 package com.example.sajhaKrishi.config;
 
-
 import com.example.sajhaKrishi.Controller.serviceController.AuthChannelInterceptorAdapter;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +9,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-
-
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
+
 
 
     private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
@@ -23,11 +21,17 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         this.authChannelInterceptorAdapter = authChannelInterceptorAdapter;
     }
 
+ 
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // Enable simple message broker for destinations starting with /topic and /queue
         registry.enableSimpleBroker("/topic");
 
+        // Set application destination prefix
         registry.setApplicationDestinationPrefixes("/app");
+
+
 
     }
 
@@ -37,12 +41,14 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/chat" ) // connection establishment
                 .setAllowedOriginPatterns("http://localhost:5173")
                 .withSockJS();
+
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(authChannelInterceptorAdapter);
     }
+
 
 
 }

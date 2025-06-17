@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 
+
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
@@ -33,6 +34,7 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 @Override
 public Message<?> preSend(Message<?> message, MessageChannel channel) {
     StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
     // Debug: Print all intercepted commands
     System.out.println("=== WebSocket Interceptor Debug ===");
     System.out.println("Channel: " + channel.toString());
@@ -50,6 +52,7 @@ public Message<?> preSend(Message<?> message, MessageChannel channel) {
         String token = extractToken(accessor);
         System.out.println("Here is the tokken"+ token);
 
+
         if (token != null) {
             try {
                 // Validate token using your existing JWTService
@@ -63,7 +66,9 @@ public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                         new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
                 );
+
                 System.out.println("Here is the authorities..."+ authorities);
+
 
 
                 // Create authentication object

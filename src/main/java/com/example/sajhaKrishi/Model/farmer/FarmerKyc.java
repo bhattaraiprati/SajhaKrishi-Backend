@@ -29,6 +29,12 @@ public class FarmerKyc {
     private String citizenshipFrontImagePath;
     private String citizenshipBackImagePath;
     private String permanentAddress;
+    private String province;
+    private String district;
+    private String municipality;
+    private Integer wardNumber;
+    private String tole;
+
 
     // Page 2: Farm & Production Details
     @Embedded

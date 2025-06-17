@@ -13,6 +13,6 @@ public class FarmDetails {
     private Double farmSize; // In Ropani/Hectares
     private String farmSizeUnit; // "Ropani" or "Hectares"
     private String primaryCrops; // Comma-separated values
-    private String seasonalCalendar; // JSON string or formatted text
+
     private String annualProductionCapacity;
 }

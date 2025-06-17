@@ -60,14 +60,19 @@ public class SecurityConfig  {
         http.csrf(customizer -> customizer.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/chat/**", "/chat/websocket").permitAll()
-                        .requestMatchers("/registers", "/userLogin").permitAll() // Only public endpoints
+
+                        .requestMatchers("/chat", "/chat/websocket").permitAll()
+                        .requestMatchers("/registers", "/userLogin", "/api/auth/google").permitAll() // Only public endpoints
+
                          // Secure all product endpoints
                         .anyRequest().permitAll())
                 .addFilterBefore(
                         new JwtAuthFilter(jwtService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class
-                );
+        )
+                .oauth2Login(Customizer.withDefaults());
+
+
         http.httpBasic(Customizer.withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

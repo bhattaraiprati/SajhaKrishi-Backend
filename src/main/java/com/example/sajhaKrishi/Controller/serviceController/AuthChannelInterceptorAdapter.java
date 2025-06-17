@@ -13,13 +13,9 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtValidationException;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.security.Principal;
@@ -27,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 
 
+
+@Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
     private final JWTService jwtService;
@@ -37,8 +35,23 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 public Message<?> preSend(Message<?> message, MessageChannel channel) {
     StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
+    // Debug: Print all intercepted commands
+    System.out.println("=== WebSocket Interceptor Debug ===");
+    System.out.println("Channel: " + channel.toString());
+    System.out.println("Accessor: " + accessor);
+
+    if (accessor != null) {
+        System.out.println("Command: " + accessor.getCommand());
+        System.out.println("Destination: " + accessor.getDestination());
+        System.out.println("Session ID: " + accessor.getSessionId());
+        System.out.println("User: " + accessor.getUser());
+        System.out.println("Native Headers: " + accessor.toNativeHeaderMap());
+    }
+    System.out.println("Here is the accessor"+ accessor);
     if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
         String token = extractToken(accessor);
+        System.out.println("Here is the tokken"+ token);
+
 
         if (token != null) {
             try {
@@ -53,6 +66,10 @@ public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                         new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
                 );
+
+                System.out.println("Here is the authorities..."+ authorities);
+
+
 
                 // Create authentication object
                 Authentication authentication = new UsernamePasswordAuthenticationToken(

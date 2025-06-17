@@ -39,7 +39,6 @@ public class UserController {
         return "Authenticated as: " + userDetails.getUsername() +
                 "\nRoles: " + userDetails.getAuthorities();
     }
-
     @PostMapping("/registers")
     public ResponseEntity<String> Register(@RequestBody User u){
         return service.registerUser(u);

@@ -64,9 +64,9 @@ public class SecurityConfig  {
                         .requestMatchers("/chat", "/chat/websocket").permitAll()
                         .requestMatchers("/registers", "/userLogin", "/api/auth/google").permitAll() // Only public endpoints
 
-                         // Secure all product endpoints
                         .anyRequest().permitAll())
-                .addFilterBefore(
+
+               .addFilterBefore(
                         new JwtAuthFilter(jwtService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class
         )

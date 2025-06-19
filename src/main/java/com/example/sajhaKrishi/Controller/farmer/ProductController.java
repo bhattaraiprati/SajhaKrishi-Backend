@@ -70,6 +70,17 @@ public ResponseEntity<ProductDTO> createProduct(
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/api/farmer/getByFarmerId")
+    public ResponseEntity<List<Product>> getProductByFarmerId(Authentication authentication){
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        List<Product> products = productService.getProductByFarmerId(email);
+
+        return  ResponseEntity.ok(products);
+    }
+
     @GetMapping("/getById")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
         Product product = productService.getProductById(id);

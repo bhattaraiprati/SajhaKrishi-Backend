@@ -21,7 +21,16 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         this.authChannelInterceptorAdapter = authChannelInterceptorAdapter;
     }
 
- 
+
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Register STOMP endpoint
+        registry.addEndpoint("/chat" ) // connection establishment
+                .setAllowedOriginPatterns("http://localhost:5173/chat/websocket")
+                .withSockJS();
+
+    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -35,19 +44,12 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     }
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register STOMP endpoint
-        registry.addEndpoint("/chat" ) // connection establishment
-                .setAllowedOriginPatterns("http://localhost:5173")
-                .withSockJS();
 
-    }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(authChannelInterceptorAdapter);
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(authChannelInterceptorAdapter);
+//    }
 
 
 

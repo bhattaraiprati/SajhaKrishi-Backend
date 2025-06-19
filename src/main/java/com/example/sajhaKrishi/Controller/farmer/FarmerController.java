@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.Controller.farmer;
 
+import com.example.sajhaKrishi.DTO.FarmerKycDTO;
 import com.example.sajhaKrishi.Model.farmer.FarmerKyc;
 import com.example.sajhaKrishi.Services.farmer.FarmerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ public class FarmerController {
 
 
     @PostMapping("/farmerKyc")
-    public ResponseEntity<?> FarmerKyc(@RequestBody FarmerKyc farmerKyc, Authentication authentication){
+    public ResponseEntity<?> FarmerKyc(@RequestBody FarmerKycDTO farmerKycDTO, Authentication authentication){
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
 
-        return farmerService.farmerKycService(farmerKyc, email);
+        return farmerService.farmerKycService(farmerKycDTO, email);
     }
 
 

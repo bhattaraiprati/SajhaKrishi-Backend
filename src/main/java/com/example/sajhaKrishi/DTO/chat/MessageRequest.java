@@ -1,5 +1,4 @@
-package com.example.sajhaKrishi.DTO.Chat;
-
+package com.example.sajhaKrishi.DTO.chat;
 
 import com.example.sajhaKrishi.Model.User;
 import lombok.AllArgsConstructor;

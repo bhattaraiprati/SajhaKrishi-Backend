@@ -1,11 +1,11 @@
 package com.example.sajhaKrishi.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.StringTokenizer;
 
 @Entity
 @Getter
@@ -14,12 +14,11 @@ import java.util.StringTokenizer;
 @AllArgsConstructor
 @ToString(exclude = "room")
 @Builder
-public class Message {
-
+public class Message {          //holds the message content sent between clients and the server.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)  // Optimize performance
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;  // Direct reference to User instead of just names/IDs
 
@@ -37,5 +36,6 @@ public class Message {
     private boolean read;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 }

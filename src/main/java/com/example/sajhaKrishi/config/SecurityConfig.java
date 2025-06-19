@@ -1,7 +1,6 @@
 package com.example.sajhaKrishi.config;
 
 
-import com.example.sajhaKrishi.Controller.serviceController.AuthChannelInterceptorAdapter;
 import com.example.sajhaKrishi.Services.JWTService;
 import io.jsonwebtoken.Claims;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
-@EnableWebSocketSecurity
 public class SecurityConfig  {
 
     private final JWTService jwtService;
@@ -60,8 +58,6 @@ public class SecurityConfig  {
         http.csrf(customizer -> customizer.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-
-                        .requestMatchers("/chat", "/chat/websocket").permitAll()
                         .requestMatchers("/registers", "/userLogin", "/api/auth/google").permitAll() // Only public endpoints
 
                         .anyRequest().permitAll())

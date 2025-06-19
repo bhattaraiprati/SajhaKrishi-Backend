@@ -1,9 +1,7 @@
 package com.example.sajhaKrishi.config;
 
-import com.example.sajhaKrishi.Controller.serviceController.AuthChannelInterceptorAdapter;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -13,25 +11,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
-
-
-    private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
-
-    public WebsocketConfig(AuthChannelInterceptorAdapter authChannelInterceptorAdapter) {
-        this.authChannelInterceptorAdapter = authChannelInterceptorAdapter;
-    }
-
-
-
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register STOMP endpoint
-        registry.addEndpoint("/chat" ) // connection establishment
-                .setAllowedOriginPatterns("http://localhost:5173/chat/websocket")
-                .withSockJS();
-
-    }
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Enable simple message broker for destinations starting with /topic and /queue
@@ -40,16 +19,16 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
         // Set application destination prefix
         registry.setApplicationDestinationPrefixes("/app");
 
-
-
+    }
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Register STOMP endpoint
+        registry.addEndpoint("/ws" ) // connection establishment
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
 
-
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(authChannelInterceptorAdapter);
-//    }
 
 
 

@@ -1,7 +1,6 @@
 package com.example.sajhaKrishi.config;
 
 import com.example.sajhaKrishi.Services.JWTService;
-import com.example.sajhaKrishi.Services.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
         // Only skip JWT validation for truly public endpoints
-        return path.equals("/registers") || path.equals("/userLogin")|| path.equals("/chat")|| path.equals("/chat/websocket");
+        return path.equals("/registers") || path.equals("/userLogin");
 
     }
 

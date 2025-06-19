@@ -1,7 +1,6 @@
 package com.example.sajhaKrishi.Model.farmer;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,6 @@
 package com.example.sajhaKrishi.Controller.farmer;
 
 import com.example.sajhaKrishi.DTO.FarmerKycDTO;
-import com.example.sajhaKrishi.Model.farmer.FarmerKyc;
 import com.example.sajhaKrishi.Services.farmer.FarmerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

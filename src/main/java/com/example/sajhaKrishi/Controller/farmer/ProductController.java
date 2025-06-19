@@ -5,7 +5,6 @@ import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.Services.farmer.ProductService;
 import com.example.sajhaKrishi.repository.UserRepo;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

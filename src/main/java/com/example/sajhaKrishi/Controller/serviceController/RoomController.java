@@ -1,6 +1,7 @@
 package com.example.sajhaKrishi.Controller.serviceController;
 
-import com.example.sajhaKrishi.DTO.Chat.CreateRoomRequest;
+
+import com.example.sajhaKrishi.DTO.chat.CreateRoomRequest;
 import com.example.sajhaKrishi.Model.Message;
 import com.example.sajhaKrishi.Model.Room;
 import com.example.sajhaKrishi.Model.User;
@@ -15,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rooms")
-@CrossOrigin("http://localhost:5173")
 public class RoomController {
 
     private RoomRepository roomRepository;
@@ -55,16 +55,28 @@ public class RoomController {
     }
 
     @GetMapping("/getUserRoom/{id}")
-    public ResponseEntity<?> getRoomDetails(@PathVariable User id){
+    public ResponseEntity<?> getRoomDetails(@PathVariable Long id){
 
-        Room userRoom = roomRepository.findByFarmer(id);
-
+//        Room userRoom = roomRepository.findByFarmer(id);
+        Room userRoom = roomRepository.findByFarmerId(id);
         if (userRoom == null){
             return  ResponseEntity.ok("Empty Room.");
 
         }
 
         return ResponseEntity.ok(userRoom);
+    }
+
+    @GetMapping("/getFarmerRoom/{id}")
+    public ResponseEntity<?> getFarmerRoomDetails(@PathVariable Long id){
+        Room room = roomRepository.findByBuyerId(id);
+        if (room == null){
+            return  ResponseEntity.ok("Empty Room.");
+
+        }
+
+        return ResponseEntity.ok(room);
+
     }
 
 

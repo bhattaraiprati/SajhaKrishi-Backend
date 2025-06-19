@@ -1,40 +1,42 @@
 package com.example.sajhaKrishi.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.lang.annotation.Documented;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Room {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Entity
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Room {
 
-    @ManyToOne
-    private User farmer;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @ManyToOne
-    private User buyer;
+        @ManyToOne
+        private User farmer;
 
-    private LocalDateTime createdAt;
+        @ManyToOne
+        private User buyer;
 
-    @OneToOne
-    private Message lastMessage;
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> messages = new ArrayList<>();
+        private LocalDateTime createdAt;
 
-    private boolean farmerActive;
-    private boolean buyerActive;
-    private LocalDateTime lastActivity;
-}
+        @OneToOne
+        @JsonIgnore
+        private Message lastMessage;
+        @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Message> messages = new ArrayList<>();
+
+        private boolean farmerActive;
+        private boolean buyerActive;
+        private LocalDateTime lastActivity;
+    }

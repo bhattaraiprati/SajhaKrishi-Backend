@@ -34,4 +34,3 @@ build/
 .vscode/
 
 .env
-src/main/resources/application.properties

@@ -67,6 +67,12 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
+    public List<Product> getProductByFarmerId( String email){
+
+        User user = userRepo.findByEmail(email);
+        return productRepository.findByUser(user);
+    }
+
     // Method to update a product
     public Product updateProduct(String id, ProductDTO productDetails) {
         Product existingProduct = productRepository.findById(id).orElse(null);

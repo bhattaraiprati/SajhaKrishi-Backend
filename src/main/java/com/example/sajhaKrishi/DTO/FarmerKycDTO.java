@@ -6,33 +6,42 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FarmerKycDTO {
-    // Page 1
+    // Personal & Identity Details
     private String dateOfBirth;
     private String gender;
     private String citizenshipNumber;
     private String citizenshipIssuedDistrict;
+    private String citizenshipFrontImagePath;
+    private String citizenshipBackImagePath;
     private String permanentAddress;
+    private String province;
+    private String district;
+    private String municipality;
+    private String wardNumber;
+    private String tole;
 
-    // Page 2
+    // Farm Details
     private String gpsCoordinates;
-    private Double farmSize;
+    private String farmSize;
     private String farmSizeUnit;
     private String primaryCrops;
     private String seasonalCalendar;
     private String annualProductionCapacity;
 
-    // Page 3
+    // Experience Details
     private Integer yearsOfExperience;
     private String farmingType;
-    private String associatedCooperatives;
     private String certifications;
+    private String supportingDocsPath;
 
-    // Page 4
+    // Bank Details
     private String accountName;
     private String accountNumber;
     private String bankName;
     private String branchName;
     private String panNumber;
+    private String panCardImagePath;
     private String esewaId;
     private String khaltiId;
+
 }

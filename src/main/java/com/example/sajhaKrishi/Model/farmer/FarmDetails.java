@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class FarmDetails {
     private String gpsCoordinates; // Could be "latitude,longitude"
-    private Double farmSize; // In Ropani/Hectares
+    private String farmSize; // In Ropani/Hectares
     private String farmSizeUnit; // "Ropani" or "Hectares"
     private String primaryCrops; // Comma-separated values
 

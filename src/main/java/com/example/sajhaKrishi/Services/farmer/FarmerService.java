@@ -19,7 +19,8 @@ public class FarmerService {
     @Autowired
     private FarmerKycRepository farmerRepo;
 
-    @Autowired UserRepo userRepo;
+    @Autowired
+    private  UserRepo userRepo;
 
     public ResponseEntity<?> farmerKycService(FarmerKycDTO farmerKycDTO, String email) {
         User user = userRepo.findByEmail(email);
@@ -81,5 +82,10 @@ public class FarmerService {
 
         farmerRepo.save(farmerKyc);
         return ResponseEntity.ok("KYC Saved Successfully");
+    }
+
+    public FarmerKycDTO getFarmerDetails(Long id){
+        FarmerKyc farmerKyc = farmerRepo.findByUserId(id);
+        return farmerKyc != null ? new FarmerKycDTO(farmerKyc) : null;
     }
 }

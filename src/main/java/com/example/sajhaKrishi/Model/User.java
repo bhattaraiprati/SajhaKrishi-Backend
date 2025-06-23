@@ -5,6 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
@@ -45,6 +51,12 @@ public class User {
         if (farmerKyc != null) {
             farmerKyc.setUser(this);
         }
+    }
+
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Return the user's role as a GrantedAuthority
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
 }

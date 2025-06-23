@@ -59,7 +59,7 @@ public class SecurityConfig  {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/registers", "/userLogin", "/api/auth/google").permitAll() // Only public endpoints
-
+                        .requestMatchers("/test-auth").authenticated()
                         .anyRequest().permitAll())
 
                .addFilterBefore(

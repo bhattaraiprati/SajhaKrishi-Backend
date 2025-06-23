@@ -80,7 +80,7 @@ public ResponseEntity<ProductDTO> createProduct(
         return  ResponseEntity.ok(products);
     }
 
-    @GetMapping("/getById")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
         Product product = productService.getProductById(id);
         if (product != null) {

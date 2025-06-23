@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,54 +60,26 @@ public class OauthController {
                 System.out.println("Google Auth successful for: " + email);
 
                 // Check if user exists in database
-                User existingUser = userRepo.findByEmail(email);
-                User user;
-
-                if (existingUser != null) {
-                    // User exists, use existing user
-                    user = existingUser;
-                    System.out.println("Existing user found: " + user.getName());
-
-                    // Optionally update user info from Google (in case name or picture changed)
-                    if (name != null && !name.equals(user.getName())) {
-                        user.setName(name);
-                        userRepo.save(user);
-                    }
-                } else {
-                    // User doesn't exist, create new user
+                User user = userRepo.findByEmail(email);
+                if (user == null) {
                     user = new User();
                     user.setEmail(email);
                     user.setName(name != null ? name : "Google User");
-                    user.setRole("User"); // Default role
-                    user.setPassword(null); // Google users don't have passwords
-
-                    // Save the new user
+                    user.setRole("User");
+                    user.setPassword(null);
                     user = userRepo.save(user);
-                    System.out.println("New Google user created: " + user.getName());
                 }
 
-                // Generate JWT token
-                String jwtToken = jwtService.generateToken(
-                        user.getEmail(),
-                        user.getName(),
-                        user.getId(),
-                        user.getRole()
-                );
-//                UsernamePasswordAuthenticationToken authToken =
-//                        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-//                Authentication auth = authManager.authenticate(authToken);
-//                User u = userRepo.findByEmail(user.getEmail());
-//                String token;
-//                if (auth.isAuthenticated()) {
-//                    token = jwtService.generateToken(u.getEmail(), u.getName(), u.getId(), u.getRole());
-//                    return ResponseEntity.ok(token);
-//                } else {
-//                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-//
-//                }
-//                // Return success response with token and user info
-                return ResponseEntity.ok(jwtToken);
+// Create an authenticated token
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
 
+                String jwtToken = jwtService.generateToken(
+                        user.getEmail(), user.getName(), user.getId(), user.getRole()
+                );
+                System.out.println("Generated Google JWT: " + jwtToken);
+                return ResponseEntity.ok(jwtToken);
             } else {
                 return ResponseEntity.badRequest().body(Map.of("error", "Invalid Google token"));
             }

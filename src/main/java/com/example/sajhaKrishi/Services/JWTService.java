@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,27 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private String secretKey = "";
+    private final String secretKey ="IfTVuuFjCIsdhIE4VfOIV/N0/U25cf5/1klH5d+7YqE=";
 
-    public JWTService(){
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sK = keyGen.generateKey();
-           secretKey = Base64.getEncoder().encodeToString(sK.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public JWTService(@Value("${secret_key}") String secretKey) {
+//        this.secretKey = secretKey;
+//        System.out.println("Loaded secret key: " + secretKey);
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        System.out.println("Decoded key length: " + keyBytes.length);
+//    }
+
+//    public JWTService(){
+//        try {
+//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+//            SecretKey sK = keyGen.generateKey();
+//           secretKey = Base64.getEncoder().encodeToString(sK.getEncoded());
+//
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
 
     public String generateToken(String email, String name, Long id, String role) {
 
@@ -36,9 +47,6 @@ public class JWTService {
         claims.put("name", name);
         claims.put("id", id);
         claims.put("role", role);
-
-
-
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -60,28 +68,36 @@ public class JWTService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        boolean isValid = username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        System.out.println("Token validation: token=" + token + ", username=" + username + ", valid=" + isValid);
+        return isValid;
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expiration = extractExpiration(token);
+        boolean expired = expiration.before(new Date());
+        System.out.println("Token expiration: " + expiration + ", expired=" + expired);
+        return expired;
     }
-
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
     public Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            System.err.println("JWT validation failed: " + e.getMessage());
+            throw e;
+        }
     }
 
     private Key getKey() {
-
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }

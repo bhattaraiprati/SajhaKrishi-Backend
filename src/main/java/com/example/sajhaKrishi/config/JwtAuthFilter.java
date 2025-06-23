@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+
     private final JWTService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -26,7 +27,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
         // Only skip JWT validation for truly public endpoints

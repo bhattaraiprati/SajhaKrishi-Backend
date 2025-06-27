@@ -1,6 +1,7 @@
 package com.example.sajhaKrishi.Controller.auth;
 
 import com.example.sajhaKrishi.DTO.OtpRequestDTO;
+import com.example.sajhaKrishi.DTO.UserDTO;
 import com.example.sajhaKrishi.Model.PasswordResetOtp;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Services.EmailSendService;
@@ -145,6 +146,19 @@ public class UserController {
         user.setPassword(encodedPassword);
         repo.save(user);
         return ResponseEntity.ok("Password changed successfully");
+
+    }
+
+    @PostMapping("/api/user/getUserDetailsById/{id}")
+    public  ResponseEntity<?> getUserDetailsById(@PathVariable Long id){
+
+        UserDTO user = repo.findUserById(id);
+
+        if(user == null){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return ResponseEntity.ok(user);
+
 
     }
 

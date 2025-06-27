@@ -2,10 +2,12 @@ package com.example.sajhaKrishi.DTO;
 
 import com.example.sajhaKrishi.Model.farmer.FarmerKyc;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class FarmerKycDTO {
     // Personal & Identity Details
 
@@ -30,6 +32,7 @@ public class FarmerKycDTO {
         // Farm Details
         if (farmerKyc.getFarmDetails() != null) {
             this.farmName = farmerKyc.getFarmDetails().getFarmName();
+            this.description = farmerKyc.getFarmDetails().getDescription();
             this.gpsCoordinates = farmerKyc.getFarmDetails().getGpsCoordinates();
             this.farmSize = farmerKyc.getFarmDetails().getFarmSize();
             this.farmSizeUnit = farmerKyc.getFarmDetails().getFarmSizeUnit();
@@ -51,7 +54,7 @@ public class FarmerKycDTO {
         this.panNumber = farmerKyc.getBankDetails().getPanNumber();
         this.panCardImagePath = farmerKyc.getBankDetails().getPanCardImagePath();
         this.esewaId = farmerKyc.getBankDetails().getEsewaId();
-        this.khaltiId = farmerKyc.getBankDetails().getKhaltiId();
+
     }
 
     private Long id;
@@ -71,6 +74,7 @@ public class FarmerKycDTO {
 
     // Farm Details
     private String farmName;
+    private String description;
     private String gpsCoordinates;
     private String farmSize;
     private String farmSizeUnit;
@@ -92,6 +96,5 @@ public class FarmerKycDTO {
     private String panNumber;
     private String panCardImagePath;
     private String esewaId;
-    private String khaltiId;
 
 }

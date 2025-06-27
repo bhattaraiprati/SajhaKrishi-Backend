@@ -77,7 +77,6 @@ public class FarmerService {
         bankDetails.setPanNumber(farmerKycDTO.getPanNumber());
         bankDetails.setPanCardImagePath(farmerKycDTO.getPanCardImagePath());
         bankDetails.setEsewaId(farmerKycDTO.getEsewaId());
-        bankDetails.setKhaltiId(farmerKycDTO.getKhaltiId());
         farmerKyc.setBankDetails(bankDetails);
 
         farmerRepo.save(farmerKyc);

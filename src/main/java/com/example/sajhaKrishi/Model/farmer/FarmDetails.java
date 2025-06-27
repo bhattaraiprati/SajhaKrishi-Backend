@@ -10,6 +10,7 @@ import lombok.Setter;
 public class FarmDetails {
 
     private String farmName;
+    private String description;
     private String gpsCoordinates; // Could be "latitude,longitude"
     private String farmSize; // In Ropani/Hectares
     private String farmSizeUnit; // "Ropani" or "Hectares"

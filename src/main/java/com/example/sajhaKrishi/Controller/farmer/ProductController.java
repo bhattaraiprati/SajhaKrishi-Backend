@@ -136,7 +136,7 @@ public ResponseEntity<ProductDTO> createProduct(
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/farmer/deleteProduct/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
@@ -151,6 +151,16 @@ public ResponseEntity<ProductDTO> createProduct(
     @GetMapping("/available")
     public ResponseEntity<List<Product>> getAvailableProducts() {
         List<Product> products = productService.getAvailableProducts();
+        return ResponseEntity.ok(products);
+    }
+
+
+    @GetMapping("/api/farmer/product/{item}")
+    public ResponseEntity<?> searchProduct(@PathVariable String item) {
+        List<Product> products = productService.getProductBySearch(item);
+        if(products.isEmpty()) {  // Check for empty list instead of null
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product Not Found");
+        }
         return ResponseEntity.ok(products);
     }
 

@@ -163,4 +163,9 @@ public class ProductService {
                 ? productRepository.findByUser(farmer)
                 : productRepository.findByUserIdAndStatus(farmer.getId(), status);
     }
+
+    public List<Product> getProductBySearch(String item) {
+        // Using the same search term for both name and category
+        return productRepository.findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(item, item);
+    }
 }

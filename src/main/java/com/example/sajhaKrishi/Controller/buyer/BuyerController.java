@@ -1,5 +1,6 @@
 package com.example.sajhaKrishi.Controller.buyer;
 
+import com.example.sajhaKrishi.DTO.Buyer.BuyerKycDTO;
 import com.example.sajhaKrishi.Model.BuyerKyc;
 import com.example.sajhaKrishi.Services.buyer.BuyerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class BuyerController {
     private BuyerService buyerService;
 
     @PostMapping("/buyerKyc")
-    public ResponseEntity<?> buyerKyc(@RequestBody BuyerKyc kyc){
+    public ResponseEntity<?> buyerKyc(@RequestBody BuyerKycDTO kyc){
 
         return buyerService.KycRegistration(kyc);
     }

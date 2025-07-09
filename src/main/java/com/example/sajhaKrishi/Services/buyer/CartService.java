@@ -110,8 +110,8 @@ public class CartService {
                 .sum();
     }
 
-    public List<CartItemDTO> moveToCheckout(Long userId) {
-        List<CartItem> cartItems = cartRepository.findByUserId(userId);
+    public List<CartItemDTO> moveToCheckout(Long userId, List<Long> productIds) {
+        List<CartItem> cartItems = cartRepository.findByUserIdAndProductIdIn(userId, productIds);
 
         cartItems.forEach(item -> {
             if (item.getStatus() == CartStatus.ACTIVE) {

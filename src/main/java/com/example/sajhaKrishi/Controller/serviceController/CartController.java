@@ -87,9 +87,11 @@ public class CartController {
     }
 
     @PostMapping("/checkout/{userId}")
-    public ResponseEntity<List<CartItemDTO>> moveToCheckout(@PathVariable Long userId) {
+    public ResponseEntity<List<CartItemDTO>> moveToCheckout(
+            @PathVariable Long userId,
+            @RequestBody List<Long> productIds) {
         try {
-            List<CartItemDTO> checkoutItems = cartService.moveToCheckout(userId);
+            List<CartItemDTO> checkoutItems = cartService.moveToCheckout(userId, productIds);
             return ResponseEntity.ok(checkoutItems);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

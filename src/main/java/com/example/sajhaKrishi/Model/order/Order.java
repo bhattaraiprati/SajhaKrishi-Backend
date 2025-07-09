@@ -33,6 +33,9 @@ public class Order {
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
 
+    @Column(name = "transaction_uuid")
+    private String transactionUuid;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -50,4 +53,6 @@ public class Order {
 
     @Embedded
     private Payment payment;
+
+
 }

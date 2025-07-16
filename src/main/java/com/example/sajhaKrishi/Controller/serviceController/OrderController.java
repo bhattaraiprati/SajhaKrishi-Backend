@@ -1,18 +1,23 @@
 package com.example.sajhaKrishi.Controller.serviceController;
 
 import com.example.sajhaKrishi.DTO.order.*;
+import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.order.*;
 import com.example.sajhaKrishi.Services.buyer.OrderService;
+import com.example.sajhaKrishi.repository.UserRepo;
 import com.example.sajhaKrishi.util.SignatureUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,9 @@ public class OrderController {
     @Autowired
     private OrderService cartService;
 
+    @Autowired
+    private UserRepo userRepository;
+
     @PostMapping("/create")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         logger.info("Creating order for userId: {}", orderDTO.getUserId());
@@ -32,10 +40,27 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDTO> getOrdersByOrderId(@PathVariable Long orderId) {
         logger.info("Fetching order by ID: {}", orderId);
         Order order = cartService.getOrderById(orderId);
         return ResponseEntity.ok(convertToDTO(order));
+    }
+
+    @GetMapping("/getOrder")
+    public ResponseEntity<?> getOrderById(Authentication authentication) {
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                return ResponseEntity.status(404).body("User not found with email: " + email);
+            }
+            // Fetch all orders for the user
+            List<Order> orders = cartService.getOrdersByUserId(user.getId());
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while fetching orders: " + e.getMessage());
+        }
     }
 
     @PostMapping("/initiate-esewa")

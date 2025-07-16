@@ -37,6 +37,7 @@ public class OrderService {
     public Order createOrder(OrderDTO orderDTO) {
         Order order = Order.builder()
                 .userId(orderDTO.getUserId())
+                .farmerId(orderDTO.getFarmerId())
                 .orderStatus(OrderStatus.valueOf(orderDTO.getOrderStatus()))
                 .totalAmount(orderDTO.getTotalAmount())
                 .transactionUuid(orderDTO.getTransactionUuid())
@@ -46,6 +47,16 @@ public class OrderService {
                 .build();
         logger.info("Creating order for userId: {}, transactionUuid: {}", orderDTO.getUserId(), orderDTO.getTransactionUuid());
         return orderRepository.save(order);
+    }
+
+    public List<Order> getOrdersByUserId(Long userId) {
+        logger.info("Fetching orders for user ID: {}", userId);
+        try {
+            return orderRepository.findByFarmerId(userId);
+        } catch (Exception e) {
+            logger.error("Error fetching orders for user ID: {}. Error: {}", userId, e.getMessage());
+            throw new RuntimeException("Failed to fetch orders for user ID: " + userId, e);
+        }
     }
 
     public Order getOrderById(Long orderId) {
@@ -109,7 +120,7 @@ public class OrderService {
                         .orElseThrow(() -> new RuntimeException("Order not found"));
                 order.getPayment().setTransactionId(transactionCode);
                 order.getPayment().setPaymentStatus(PaymentStatus.COMPLETED);
-                order.setOrderStatus(OrderStatus.CONFIRMED);
+                order.setOrderStatus(OrderStatus.PENDING);
                 orderRepository.save(order);
                 return true;
             }

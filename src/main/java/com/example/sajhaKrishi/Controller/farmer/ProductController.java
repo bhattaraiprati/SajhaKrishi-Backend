@@ -3,6 +3,8 @@ package com.example.sajhaKrishi.Controller.farmer;
 import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
+import com.example.sajhaKrishi.Model.order.Order;
+import com.example.sajhaKrishi.Services.buyer.OrderService;
 import com.example.sajhaKrishi.Services.farmer.ProductService;
 import com.example.sajhaKrishi.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ public class ProductController {
 
     private final ProductService productService;
     private final UserRepo userRepository;
+    private  final OrderService orderService;
 
     @Autowired
-    public ProductController(ProductService productService, UserRepo userRepository) {
+    public ProductController(ProductService productService, UserRepo userRepository, OrderService orderService) {
         this.productService = productService;
         this.userRepository = userRepository;
+        this.orderService = orderService;
     }
 //    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
 @PostMapping("/farmer/addProduct")
@@ -163,5 +167,8 @@ public ResponseEntity<ProductDTO> createProduct(
         }
         return ResponseEntity.ok(products);
     }
+
+
+
 
 }

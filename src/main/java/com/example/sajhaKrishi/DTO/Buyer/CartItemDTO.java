@@ -9,6 +9,7 @@ public class CartItemDTO {
 
     private Long id;
     private Long userId;
+    private Long farmerId;
     private Long productId;
     private String productName;
     private Double price;

@@ -36,6 +36,7 @@ public class CartService {
             // Create new cart item
             cartItem = CartItem.builder()
                     .userId(cartItemDTO.getUserId())
+                    .farmerId(cartItemDTO.getFarmerId())
                     .productId(cartItemDTO.getProductId())
                     .productName(cartItemDTO.getProductName())
                     .price(cartItemDTO.getPrice())
@@ -141,6 +142,7 @@ public class CartService {
         CartItemDTO dto = new CartItemDTO();
         dto.setId(cartItem.getId());
         dto.setUserId(cartItem.getUserId());
+        dto.setFarmerId(cartItem.getFarmerId());
         dto.setProductId(cartItem.getProductId());
         dto.setProductName(cartItem.getProductName());
         dto.setPrice(cartItem.getPrice());

@@ -25,6 +25,9 @@ public class CartItem {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "farmer_id")
+    private Long farmerId;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private CartStatus status = CartStatus.ACTIVE;

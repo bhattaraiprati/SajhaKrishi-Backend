@@ -1,8 +1,10 @@
 package com.example.sajhaKrishi.Controller.serviceController;
 
 import com.example.sajhaKrishi.DTO.order.*;
+import com.example.sajhaKrishi.Model.Notification;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.order.*;
+import com.example.sajhaKrishi.Services.NotificationService;
 import com.example.sajhaKrishi.Services.buyer.OrderService;
 import com.example.sajhaKrishi.repository.UserRepo;
 import com.example.sajhaKrishi.util.SignatureUtil;
@@ -10,11 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
@@ -28,6 +32,8 @@ public class OrderController {
 
     @Autowired
     private OrderService cartService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private UserRepo userRepository;
@@ -60,6 +66,100 @@ public class OrderController {
             return ResponseEntity.ok(orders);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("An error occurred while fetching orders: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<?> updateOrderByStatus(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
+        try {
+            if (orderDTO.getOrderStatus() == null || orderDTO.getOrderStatus().isEmpty()) {
+                logger.warn("Order status is required for order ID: {}", id);
+                return ResponseEntity.badRequest().body("Order status is required");
+            }
+
+            Order updatedOrder = cartService.updateOrderByStatus(id, orderDTO);
+            if (updatedOrder == null) {
+                logger.warn("Order not found for ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+
+            // Send notification for order status change
+            sendOrderStatusNotification(updatedOrder);
+
+            logger.info("Successfully updated status for order ID: {} to {}", id, orderDTO.getOrderStatus());
+            return ResponseEntity.ok(updatedOrder);
+
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid order status for order ID: {} - {}", id, e.getMessage());
+            return ResponseEntity.badRequest().body("Invalid order status: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating order status for ID: {} - {}", id, e.getMessage(), e);
+            return ResponseEntity.status(500).body("Failed to update order status: " + e.getMessage());
+        }
+    }
+
+    private void sendOrderStatusNotification(Order order) {
+        try {
+            String title = "Order Status Updated";
+            String message = String.format(
+                    "Your order #%d status changed to %s",
+                    order.getId(),
+                    order.getOrderStatus()
+            );
+
+            // Create and send notification
+            Notification notification = notificationService.createOrderNotification(
+                    order.getUserId(),
+                    title,
+                    message,
+                    order.getId()
+            );
+
+            logger.info("Sent order status notification for order ID: {}", order.getId());
+        } catch (Exception e) {
+            logger.error("Error sending order status notification: {}", e.getMessage());
+        }
+    }
+
+    private String createOrderStatusMessage(Order order) {
+        String status = order.getOrderStatus().name();
+        switch (status) {
+            case "PENDING":
+                return "Your order #" + order.getId() + " is now pending and being processed.";
+            case "CONFIRMED":
+                return "Great news! Your order #" + order.getId() + " has been confirmed.";
+            case "SHIPPED":
+                return "Your order #" + order.getId() + " has been shipped and is on the way.";
+            case "DELIVERED":
+                return "Your order #" + order.getId() + " has been delivered successfully.";
+            case "CANCELLED":
+                return "Your order #" + order.getId() + " has been cancelled.";
+            default:
+                return "Your order #" + order.getId() + " status has been updated to " + status.toLowerCase() + ".";
+        }
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterOrders(
+            Authentication authentication,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) String search) {
+
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+            User user = userRepository.findByEmail(email);
+
+            if (user == null) {
+                return ResponseEntity.status(404).body("User not found with email: " + email);
+            }
+
+            List<Order> filteredOrders = cartService.filterOrders(user.getId(), status, startDate, endDate, search);
+            return ResponseEntity.ok(filteredOrders);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while filtering orders: " + e.getMessage());
         }
     }
 

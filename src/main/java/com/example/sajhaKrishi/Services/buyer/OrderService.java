@@ -65,6 +65,59 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
     }
 
+    public Order updateOrderByStatus(Long id, OrderDTO orderDTO) {
+        Order orderDetails = orderRepository.findById(id).orElse(null);
+
+        if (orderDetails == null) {
+            logger.warn("Order not found for ID: {}", id);
+            return null;
+        }
+
+        try {
+            OrderStatus newStatus = OrderStatus.valueOf(orderDTO.getOrderStatus());
+//            if (newStatus == OrderStatus.CANCELLED) {
+//                throw new IllegalArgumentException("Cannot change status to CANCELED");
+//            }
+            orderDetails.setOrderStatus(newStatus);
+            Order updatedOrder = orderRepository.save(orderDetails);
+            logger.info("Order ID: {} status updated to {}", id, newStatus);
+            return updatedOrder;
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid order status: {} for order ID: {}", orderDTO.getOrderStatus(), id);
+            throw new IllegalArgumentException("Invalid order status: " + orderDTO.getOrderStatus());
+        }
+    }
+
+    public List<Order> filterOrders(Long farmerId, String status, LocalDateTime startDate, LocalDateTime endDate, String searchTerm) {
+        logger.info("Filtering orders for farmer ID: {}, status: {}, date range: {} to {}, search: {}",
+                farmerId, status, startDate, endDate, searchTerm);
+
+        try {
+            if (status != null && !status.isEmpty() && !status.equals("ALL")) {
+                return orderRepository.findByFarmerIdAndOrderStatus(farmerId, OrderStatus.valueOf(status));
+            }
+
+            if (startDate != null && endDate != null) {
+                return orderRepository.findByFarmerIdAndCreatedAtBetween(farmerId, startDate, endDate);
+            }
+
+            if (searchTerm != null && !searchTerm.isEmpty()) {
+                try {
+                    Long orderId = Long.parseLong(searchTerm);
+                    return orderRepository.findByFarmerIdAndId(farmerId, orderId);
+                } catch (NumberFormatException e) {
+                    return orderRepository.findByFarmerIdAndDeliveryInfoFullNameContainingIgnoreCase(farmerId, searchTerm);
+                }
+            }
+
+            // Default: return all orders for the farmer
+            return orderRepository.findByFarmerId(farmerId);
+        } catch (Exception e) {
+            logger.error("Error filtering orders: {}", e.getMessage());
+            throw new RuntimeException("Failed to filter orders: " + e.getMessage());
+        }
+    }
+
     public Order getOrderByTransactionUuid(String transactionUuid) {
         logger.info("Fetching order by transactionUuid: {}", transactionUuid);
         return orderRepository.findByTransactionUuid(transactionUuid)

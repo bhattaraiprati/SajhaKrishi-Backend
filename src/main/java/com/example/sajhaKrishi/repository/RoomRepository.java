@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    Room findByFarmerId(Long farmerId);
+    List<Room> findByFarmerId(Long farmerId);
     Room findByBuyerId(Long buyerId);
     Room findByFarmer(User id);
     List<Room> findByFarmerOrBuyer(User user1, User user2);

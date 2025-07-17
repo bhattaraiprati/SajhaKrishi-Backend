@@ -58,7 +58,7 @@ public class RoomController {
     public ResponseEntity<?> getRoomDetails(@PathVariable Long id){
 
 //        Room userRoom = roomRepository.findByFarmer(id);
-        Room userRoom = roomRepository.findByFarmerId(id);
+        List<Room> userRoom = roomRepository.findByFarmerId(id);
         if (userRoom == null){
             return  ResponseEntity.ok("Empty Room.");
 

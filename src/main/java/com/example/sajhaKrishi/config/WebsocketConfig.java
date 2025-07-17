@@ -14,10 +14,13 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Enable simple message broker for destinations starting with /topic and /queue
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic", "/queue");
 
         // Set application destination prefix
         registry.setApplicationDestinationPrefixes("/app");
+
+        // Enable user-specific destinations
+        registry.setUserDestinationPrefix("/user");
 
     }
     @Override
@@ -27,9 +30,5 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
-
-
-
-
 
 }

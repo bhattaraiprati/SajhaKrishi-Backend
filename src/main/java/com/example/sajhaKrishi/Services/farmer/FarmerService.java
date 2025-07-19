@@ -48,12 +48,11 @@ public class FarmerService {
         farmerKyc.setProvince(farmerKycDTO.getProvince());
         farmerKyc.setDistrict(farmerKycDTO.getDistrict());
         farmerKyc.setMunicipality(farmerKycDTO.getMunicipality());
-        farmerKyc.setWardNumber(Integer.parseInt(farmerKycDTO.getWardNumber())); // Convert String to Integer
+        farmerKyc.setWardNumber(farmerKycDTO.getWardNumber()); // Convert String to Integer
         farmerKyc.setTole(farmerKycDTO.getTole());
 
         // Set farm details
         FarmDetails farmDetails = new FarmDetails();
-        farmDetails.setGpsCoordinates(farmerKycDTO.getGpsCoordinates());
         farmDetails.setFarmSize(farmerKycDTO.getFarmSize());
         farmDetails.setFarmSizeUnit(farmerKycDTO.getFarmSizeUnit());
         farmDetails.setPrimaryCrops(farmerKycDTO.getPrimaryCrops());

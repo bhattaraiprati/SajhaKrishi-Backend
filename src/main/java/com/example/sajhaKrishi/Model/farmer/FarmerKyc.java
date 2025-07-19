@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -48,5 +50,8 @@ public class FarmerKyc {
     @Embedded
     private BankDetails bankDetails;
 
+    // New fields for KYC status
+    private String kycStatus = "PENDING"; // Default to PENDING
+    private Boolean verified = false; // Default to false
 
 }

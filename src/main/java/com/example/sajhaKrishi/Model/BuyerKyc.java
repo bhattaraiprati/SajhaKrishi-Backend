@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -19,6 +21,7 @@ public class BuyerKyc {
     @JoinColumn(name = "user_id")  // This is the only mapping needed for the foreign key
     @JsonIgnoreProperties({"farmerKyc", "buyerKyc"})
     private User user;
+
 
     private String fullName;
 
@@ -45,5 +48,9 @@ public class BuyerKyc {
     private String citizenshipBackImagePath;
     private String panNumber;
     private String panCardImagePath;
+
+    // New fields for KYC status
+    private String kycStatus = "PENDING"; // Default to PENDING
+    private Boolean verified = false; // Default to false
 }
 

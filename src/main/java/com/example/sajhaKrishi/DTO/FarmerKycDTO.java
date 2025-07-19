@@ -10,55 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FarmerKycDTO {
     // Personal & Identity Details
-
-    // Constructor
-    public FarmerKycDTO(FarmerKyc farmerKyc) {
-        this.id = farmerKyc.getId();
-        this.userId = farmerKyc.getUser() != null ? farmerKyc.getUser().getId() : null;
-
-        this.dateOfBirth = farmerKyc.getDateOfBirth();
-        this.gender = farmerKyc.getGender();
-        this.citizenshipNumber = farmerKyc.getCitizenshipNumber();
-        this.citizenshipIssuedDistrict = farmerKyc.getCitizenshipIssuedDistrict();
-        this.citizenshipFrontImagePath = farmerKyc.getCitizenshipFrontImagePath();
-        this.citizenshipBackImagePath = farmerKyc.getCitizenshipBackImagePath();
-        this.permanentAddress = farmerKyc.getPermanentAddress();
-        this.province = farmerKyc.getProvince();
-        this.district = farmerKyc.getDistrict();
-        this.municipality = farmerKyc.getMunicipality();
-        this.wardNumber = String.valueOf(farmerKyc.getWardNumber());
-        this.tole = farmerKyc.getTole();
-
-        // Farm Details
-        if (farmerKyc.getFarmDetails() != null) {
-            this.farmName = farmerKyc.getFarmDetails().getFarmName();
-            this.description = farmerKyc.getFarmDetails().getDescription();
-            this.gpsCoordinates = farmerKyc.getFarmDetails().getGpsCoordinates();
-            this.farmSize = farmerKyc.getFarmDetails().getFarmSize();
-            this.farmSizeUnit = farmerKyc.getFarmDetails().getFarmSizeUnit();
-            this.primaryCrops = farmerKyc.getFarmDetails().getPrimaryCrops();
-            this.annualProductionCapacity = farmerKyc.getFarmDetails().getAnnualProductionCapacity();
-        }
-
-        // Experience
-        this.yearsOfExperience = farmerKyc.getExperienceDetails().getYearsOfExperience();
-        this.farmingType = farmerKyc.getExperienceDetails().getFarmingType();
-        this.certifications = farmerKyc.getExperienceDetails().getCertifications();
-        this.supportingDocsPath = farmerKyc.getExperienceDetails().getSupportingDocsPath();
-
-        // Bank Details
-        this.accountName = farmerKyc.getBankDetails().getAccountName();
-        this.accountNumber = farmerKyc.getBankDetails().getAccountNumber();
-        this.bankName = farmerKyc.getBankDetails().getBankName();
-        this.branchName = farmerKyc.getBankDetails().getBranchName();
-        this.panNumber = farmerKyc.getBankDetails().getPanNumber();
-        this.panCardImagePath = farmerKyc.getBankDetails().getPanCardImagePath();
-        this.esewaId = farmerKyc.getBankDetails().getEsewaId();
-
-    }
-
     private Long id;
     private Long userId;
+    private String userName; // Added to include user name for display
+    private String userEmail; // Added to include user email for display
     private String dateOfBirth;
     private String gender;
     private String citizenshipNumber;
@@ -69,17 +24,17 @@ public class FarmerKycDTO {
     private String province;
     private String district;
     private String municipality;
-    private String wardNumber;
+    private Integer wardNumber; // Changed to Integer to match FarmerKyc model
     private String tole;
+    private String kycStatus; // Added for KYC status tracking
+    private Boolean verified; // Added for verification status
 
     // Farm Details
     private String farmName;
     private String description;
-    private String gpsCoordinates;
     private String farmSize;
     private String farmSizeUnit;
     private String primaryCrops;
-    private String seasonalCalendar;
     private String annualProductionCapacity;
 
     // Experience Details
@@ -96,5 +51,61 @@ public class FarmerKycDTO {
     private String panNumber;
     private String panCardImagePath;
     private String esewaId;
+    private String khaltiId;
+
+    // Constructor
+    public FarmerKycDTO(FarmerKyc farmerKyc) {
+        if (farmerKyc == null) {
+            return;
+        }
+        this.id = farmerKyc.getId();
+        this.userId = farmerKyc.getUser() != null ? farmerKyc.getUser().getId() : null;
+        this.userName = farmerKyc.getUser() != null ? farmerKyc.getUser().getName() : null;
+        this.userEmail = farmerKyc.getUser() != null ? farmerKyc.getUser().getEmail() : null;
+        this.dateOfBirth = farmerKyc.getDateOfBirth();
+        this.gender = farmerKyc.getGender();
+        this.citizenshipNumber = farmerKyc.getCitizenshipNumber();
+        this.citizenshipIssuedDistrict = farmerKyc.getCitizenshipIssuedDistrict();
+        this.citizenshipFrontImagePath = farmerKyc.getCitizenshipFrontImagePath();
+        this.citizenshipBackImagePath = farmerKyc.getCitizenshipBackImagePath();
+        this.permanentAddress = farmerKyc.getPermanentAddress();
+        this.province = farmerKyc.getProvince();
+        this.district = farmerKyc.getDistrict();
+        this.municipality = farmerKyc.getMunicipality();
+        this.wardNumber = farmerKyc.getWardNumber();
+        this.tole = farmerKyc.getTole();
+        this.kycStatus = farmerKyc.getKycStatus();
+        this.verified = farmerKyc.getVerified();
+
+        // Farm Details
+        if (farmerKyc.getFarmDetails() != null) {
+            this.farmName = farmerKyc.getFarmDetails().getFarmName();
+            this.description = farmerKyc.getFarmDetails().getDescription();
+            this.farmSize = farmerKyc.getFarmDetails().getFarmSize();
+            this.farmSizeUnit = farmerKyc.getFarmDetails().getFarmSizeUnit();
+            this.primaryCrops = farmerKyc.getFarmDetails().getPrimaryCrops();
+            this.annualProductionCapacity = farmerKyc.getFarmDetails().getAnnualProductionCapacity();
+        }
+
+        // Experience Details
+        if (farmerKyc.getExperienceDetails() != null) {
+            this.yearsOfExperience = farmerKyc.getExperienceDetails().getYearsOfExperience();
+            this.farmingType = farmerKyc.getExperienceDetails().getFarmingType();
+            this.certifications = farmerKyc.getExperienceDetails().getCertifications();
+            this.supportingDocsPath = farmerKyc.getExperienceDetails().getSupportingDocsPath();
+        }
+
+        // Bank Details
+        if (farmerKyc.getBankDetails() != null) {
+            this.accountName = farmerKyc.getBankDetails().getAccountName();
+            this.accountNumber = farmerKyc.getBankDetails().getAccountNumber();
+            this.bankName = farmerKyc.getBankDetails().getBankName();
+            this.branchName = farmerKyc.getBankDetails().getBranchName();
+            this.panNumber = farmerKyc.getBankDetails().getPanNumber();
+            this.panCardImagePath = farmerKyc.getBankDetails().getPanCardImagePath();
+            this.esewaId = farmerKyc.getBankDetails().getEsewaId();
+            this.khaltiId = farmerKyc.getBankDetails().getKhaltiId();
+        }
+    }
 
 }

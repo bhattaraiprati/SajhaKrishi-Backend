@@ -11,6 +11,8 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     List<Product> findByUser(User user);
+
+    List<Product> findByUserId(Long id);
     List<Product> findByAvailable(Boolean available);
 
     List<Product> findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(String name, String category);

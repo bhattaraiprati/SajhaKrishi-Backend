@@ -33,6 +33,14 @@ public class BuyerService {
         }
     }
 
+    public BuyerKycDTO getKycByUserId(Long id) {
+        BuyerKyc buyerKyc = kycRepo.findByUserId(id);
+        if (buyerKyc == null) {
+            return null; // Let controller handle null case
+        }
+        return convertEntityToDTO(buyerKyc); // Convert entity to DTO
+    }
+
     private BuyerKyc convertDTOToEntity(BuyerKycDTO dto) {
         BuyerKyc kyc = new BuyerKyc();
 
@@ -64,6 +72,10 @@ public class BuyerService {
         }
 
         return kyc;
+    }
+
+    private BuyerKycDTO convertEntityToDTO(BuyerKyc kyc) {
+        return new BuyerKycDTO(kyc); // Use the constructor that takes BuyerKyc
     }
 
 

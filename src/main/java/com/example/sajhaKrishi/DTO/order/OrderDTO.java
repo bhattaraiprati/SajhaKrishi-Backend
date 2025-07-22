@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class OrderDTO {
+
+    private Long id;
     private Long userId;
     private Long farmerId;
     private String orderStatus;

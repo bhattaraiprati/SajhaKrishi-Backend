@@ -1,9 +1,6 @@
 package com.example.sajhaKrishi.Services.buyer;
 
-import com.example.sajhaKrishi.DTO.order.DeliveryInfoDTO;
-import com.example.sajhaKrishi.DTO.order.OrderDTO;
-import com.example.sajhaKrishi.DTO.order.OrderItemDTO;
-import com.example.sajhaKrishi.DTO.order.PaymentDTO;
+import com.example.sajhaKrishi.DTO.order.*;
 import com.example.sajhaKrishi.Model.order.*;
 import com.example.sajhaKrishi.repository.OrderRepository;
 import com.example.sajhaKrishi.util.SignatureUtil;
@@ -65,6 +62,16 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
     }
 
+    public List<OrderDTO> getOrderByUserId(Long id) {
+        List<Order> orders = orderRepository.findByUserId(id);
+        if (orders.isEmpty()) {
+            throw new RuntimeException("No orders found for user ID: " + id);
+        }
+        return orders.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public Order updateOrderByStatus(Long id, OrderDTO orderDTO) {
         Order orderDetails = orderRepository.findById(id).orElse(null);
 
@@ -122,6 +129,71 @@ public class OrderService {
         logger.info("Fetching order by transactionUuid: {}", transactionUuid);
         return orderRepository.findByTransactionUuid(transactionUuid)
                 .orElseThrow(() -> new RuntimeException("Order not found with transactionUuid: " + transactionUuid));
+    }
+
+
+    private OrderDTO convertToDTO(Order order) {
+        OrderDTO dto = new OrderDTO();
+        dto.setId(order.getId());
+        dto.setUserId(order.getUserId());
+        dto.setFarmerId(order.getFarmerId());
+        dto.setOrderStatus(order.getOrderStatus().name());
+        dto.setTotalAmount(order.getTotalAmount());
+        dto.setTransactionUuid(order.getTransactionUuid());
+        dto.setDeliveryInfo(convertToDeliveryInfoDTO(order.getDeliveryInfo()));
+        dto.setItems(order.getItems().stream()
+                .map(this::convertToOrderItemDTO)
+                .collect(Collectors.toList()));
+        dto.setPayment(convertToPaymentDTO(order.getPayment()));
+        return dto;
+    }
+
+    private DeliveryInfoDTO convertToDeliveryInfoDTO(DeliveryInfo deliveryInfo) {
+        DeliveryInfoDTO dto = new DeliveryInfoDTO();
+        dto.setFullName(deliveryInfo.getFullName());
+        dto.setStreetAddress(deliveryInfo.getStreetAddress());
+        dto.setWardNumber(deliveryInfo.getWardNumber());
+        dto.setMunicipality(deliveryInfo.getMunicipality());
+        dto.setDistrict(deliveryInfo.getDistrict());
+        dto.setLandmark(deliveryInfo.getLandmark());
+        dto.setPhoneNumber(deliveryInfo.getPhoneNumber());
+        dto.setAlternatePhoneNumber(deliveryInfo.getAlternatePhoneNumber());
+        dto.setEmail(deliveryInfo.getEmail());
+        dto.setDeliveryInstructions(deliveryInfo.getDeliveryInstructions());
+        dto.setBillingAddress(convertToBillingAddressDTO(deliveryInfo.getBillingAddress()));
+        return dto;
+    }
+
+    private BillingAddressDTO convertToBillingAddressDTO(BillingAddress billingAddress) {
+        BillingAddressDTO dto = new BillingAddressDTO();
+        dto.setStreetAddress(billingAddress.getStreetAddress());
+        dto.setMunicipality(billingAddress.getMunicipality());
+        dto.setDistrict(billingAddress.getDistrict());
+        return dto;
+    }
+
+    private OrderItemDTO convertToOrderItemDTO(OrderItem item) {
+        OrderItemDTO dto = new OrderItemDTO();
+        dto.setProductId(item.getProductId());
+        dto.setProductName(item.getProductName());
+        dto.setPrice(item.getPrice());
+        dto.setQuantity(item.getQuantity());
+        dto.setFarmName(item.getFarmName());
+        dto.setLocation(item.getLocation());
+        dto.setImageUrl(item.getImageUrl());
+        return dto;
+    }
+
+    private PaymentDTO convertToPaymentDTO(Payment payment) {
+        PaymentDTO dto = new PaymentDTO();
+        dto.setPaymentMethod(payment.getPaymentMethod());
+        dto.setPaymentStatus(payment.getPaymentStatus().name());
+        dto.setTransactionId(payment.getTransactionId());
+        dto.setAmount(payment.getAmount());
+        dto.setPaymentDate(payment.getPaymentDate() != null
+                ? payment.getPaymentDate().format(DateTimeFormatter.ISO_DATE_TIME)
+                : null);
+        return dto;
     }
 
     public Object initiateEsewaPayment(OrderDTO orderDTO) {
@@ -329,4 +401,7 @@ class EsewaStatusResponse {
                 "', total_amount='" + total_amount + "', transaction_uuid='" + transaction_uuid +
                 "', product_code='" + product_code + "', ref_id='" + ref_id + "'}";
     }
+
+
 }
+

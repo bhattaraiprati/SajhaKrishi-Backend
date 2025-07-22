@@ -52,6 +52,12 @@ public class OrderController {
         return ResponseEntity.ok(convertToDTO(order));
     }
 
+    @GetMapping("/getOrder/{id}")
+    public ResponseEntity<?> getOrderByUserId(@PathVariable Long id) {
+        List<OrderDTO> orderDTO = cartService.getOrderByUserId(id);
+        return ResponseEntity.ok(orderDTO);
+    }
+
     @GetMapping("/getOrder")
     public ResponseEntity<?> getOrderById(Authentication authentication) {
         try {

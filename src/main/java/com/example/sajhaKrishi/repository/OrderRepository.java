@@ -14,6 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByTransactionUuid(String transactionUuid);
     List<Order> findByFarmerId(Long userId);
 
+    List<Order> findByUserId(Long id);
+
     // Add these new methods for filtering
     List<Order> findByFarmerIdAndOrderStatus(Long farmerId, OrderStatus orderStatus);
     List<Order> findByFarmerIdAndCreatedAtBetween(Long farmerId, LocalDateTime startDate, LocalDateTime endDate);

@@ -105,10 +105,10 @@ public class CartService {
 
     public int getCartItemCount(Long userId) {
         List<CartItem> cartItems = cartRepository.findByUserId(userId);
-        return cartItems.stream()
+        // Count distinct items, not sum of quantities
+        return (int) cartItems.stream()
                 .filter(item -> item.getStatus() == CartStatus.ACTIVE)
-                .mapToInt(CartItem::getQuantity)
-                .sum();
+                .count(); // This counts the number of items, not their quantities
     }
 
     public List<CartItemDTO> moveToCheckout(Long userId, List<Long> productIds) {

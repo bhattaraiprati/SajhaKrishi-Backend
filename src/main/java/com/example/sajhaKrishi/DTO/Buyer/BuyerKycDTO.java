@@ -8,12 +8,15 @@ import lombok.Setter;
 @Setter
 public class BuyerKycDTO {
 
+    public BuyerKycDTO() {
+    }
+
     private long id;
     private long userId;
     private String fullName;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String email;
-    private String dateOfBirth; // Fixed typo
+    private String DateofBirth; // Fixed typo
     private String gender;
     private String profilePhotoPath;
     private String province;
@@ -37,7 +40,7 @@ public class BuyerKycDTO {
         this.fullName = kyc.getFullName();
         this.phoneNumber = kyc.getPhoneNumber();
         this.email = kyc.getEmail();
-        this.dateOfBirth = kyc.getDateofBirth();
+        this.DateofBirth = kyc.getDateofBirth();
         this.gender = kyc.getGender();
         this.profilePhotoPath = kyc.getProfilePhotoPath();
         this.province = kyc.getProvince();

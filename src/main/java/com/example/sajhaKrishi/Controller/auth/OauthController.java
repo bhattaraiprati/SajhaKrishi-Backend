@@ -65,7 +65,7 @@ public class OauthController {
                     user = new User();
                     user.setEmail(email);
                     user.setName(name != null ? name : "Google User");
-                    user.setRole("User");
+                    user.setRole("buyer");
                     user.setPassword(null);
                     user = userRepo.save(user);
                 }

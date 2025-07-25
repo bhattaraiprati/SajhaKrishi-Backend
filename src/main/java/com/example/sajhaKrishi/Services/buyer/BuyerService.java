@@ -49,7 +49,7 @@ public class BuyerService {
         kyc.setFullName(dto.getFullName());
         kyc.setPhoneNumber(dto.getPhoneNumber());
         kyc.setEmail(dto.getEmail());
-        kyc.setDateofBirth(dto.getDateOfBirth()); // Note: keeping original field name from entity
+        kyc.setDateofBirth(dto.getDateofBirth()); // Note: keeping original field name from entity
         kyc.setGender(dto.getGender());
         kyc.setProfilePhotoPath(dto.getProfilePhotoPath());
         kyc.setProvince(dto.getProvince());

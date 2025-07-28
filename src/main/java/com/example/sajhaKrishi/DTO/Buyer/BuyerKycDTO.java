@@ -16,7 +16,7 @@ public class BuyerKycDTO {
     private String fullName;
     private String phoneNumber;
     private String email;
-    private String DateofBirth; // Fixed typo
+    private String dateOfBirth; // Fixed typo
     private String gender;
     private String profilePhotoPath;
     private String province;
@@ -26,10 +26,8 @@ public class BuyerKycDTO {
     private String streetAddress;
     private String landmark;
     private String citizenshipNumber;
-    private String citizenshipFrontImagePath;
-    private String citizenshipBackImagePath;
     private String panNumber;
-    private String panCardImagePath;
+    private String businessRegistrationImagePath;
     private String kycStatus;
     private Boolean verified;
 
@@ -40,7 +38,7 @@ public class BuyerKycDTO {
         this.fullName = kyc.getFullName();
         this.phoneNumber = kyc.getPhoneNumber();
         this.email = kyc.getEmail();
-        this.DateofBirth = kyc.getDateofBirth();
+        this.dateOfBirth = kyc.getDateOfBirth();
         this.gender = kyc.getGender();
         this.profilePhotoPath = kyc.getProfilePhotoPath();
         this.province = kyc.getProvince();
@@ -50,11 +48,10 @@ public class BuyerKycDTO {
         this.streetAddress = kyc.getStreetAddress();
         this.landmark = kyc.getLandmark();
         this.citizenshipNumber = kyc.getCitizenshipNumber();
-        this.citizenshipFrontImagePath = kyc.getCitizenshipFrontImagePath();
-        this.citizenshipBackImagePath = kyc.getCitizenshipBackImagePath();
+        this.businessRegistrationImagePath = kyc.getBusinessRegistrationImagePath();
         this.panNumber = kyc.getPanNumber();
-        this.panCardImagePath = kyc.getPanCardImagePath();
         this.kycStatus = kyc.getKycStatus();
         this.verified = kyc.getVerified();
     }
+
 }

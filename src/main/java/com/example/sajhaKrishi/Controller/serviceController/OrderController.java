@@ -42,6 +42,9 @@ public class OrderController {
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         logger.info("Creating order for userId: {}", orderDTO.getUserId());
         Order order = cartService.createOrder(orderDTO);
+
+        // Send notification to farmer about new order
+        sendNewOrderNotificationToFarmer(order);
         return ResponseEntity.ok(convertToDTO(order));
     }
 
@@ -127,6 +130,30 @@ public class OrderController {
         }
     }
 
+
+    private void sendNewOrderNotificationToFarmer(Order order) {
+        try {
+            String title = "New Order Received!";
+            String message = String.format(
+                    "You have received a new order #%d with total amount Rs. %.2f",
+                    order.getId(),
+                    order.getTotalAmount()
+            );
+
+            // Create and send notification to farmer
+            Notification notification = notificationService.createNewOrderNotification(
+                    order.getFarmerId(), // Send to farmer, not buyer
+                    title,
+                    message,
+                    order.getId()
+            );
+
+            logger.info("Sent new order notification to farmer ID: {} for order ID: {}",
+                    order.getFarmerId(), order.getId());
+        } catch (Exception e) {
+            logger.error("Error sending new order notification to farmer: {}", e.getMessage());
+        }
+    }
     private String createOrderStatusMessage(Order order) {
         String status = order.getOrderStatus().name();
         switch (status) {

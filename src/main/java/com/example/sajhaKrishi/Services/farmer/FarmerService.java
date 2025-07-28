@@ -42,17 +42,20 @@ public class FarmerService {
         farmerKyc.setGender(farmerKycDTO.getGender());
         farmerKyc.setCitizenshipNumber(farmerKycDTO.getCitizenshipNumber());
         farmerKyc.setCitizenshipIssuedDistrict(farmerKycDTO.getCitizenshipIssuedDistrict());
-        farmerKyc.setCitizenshipFrontImagePath(farmerKycDTO.getCitizenshipFrontImagePath());
-        farmerKyc.setCitizenshipBackImagePath(farmerKycDTO.getCitizenshipBackImagePath());
         farmerKyc.setPermanentAddress(farmerKycDTO.getPermanentAddress());
         farmerKyc.setProvince(farmerKycDTO.getProvince());
         farmerKyc.setDistrict(farmerKycDTO.getDistrict());
         farmerKyc.setMunicipality(farmerKycDTO.getMunicipality());
         farmerKyc.setWardNumber(farmerKycDTO.getWardNumber()); // Convert String to Integer
         farmerKyc.setTole(farmerKycDTO.getTole());
+        farmerKyc.setRejectionReason(farmerKycDTO.getRejectionReason());
+        farmerKyc.setKycStatus("Pending");
+        farmerKyc.setVerified(false);
+        farmerKyc.setProfileImagePath(farmerKycDTO.getProfileImagePath());
 
         // Set farm details
         FarmDetails farmDetails = new FarmDetails();
+        farmDetails.setFarmName(farmerKycDTO.getFarmName());
         farmDetails.setFarmSize(farmerKycDTO.getFarmSize());
         farmDetails.setFarmSizeUnit(farmerKycDTO.getFarmSizeUnit());
         farmDetails.setPrimaryCrops(farmerKycDTO.getPrimaryCrops());
@@ -64,18 +67,12 @@ public class FarmerService {
         experienceDetails.setYearsOfExperience(farmerKycDTO.getYearsOfExperience());
         experienceDetails.setFarmingType(farmerKycDTO.getFarmingType());
         experienceDetails.setCertifications(farmerKycDTO.getCertifications());
-        experienceDetails.setSupportingDocsPath(farmerKycDTO.getSupportingDocsPath());
         farmerKyc.setExperienceDetails(experienceDetails);
 
         // Set bank details
         BankDetails bankDetails = new BankDetails();
-        bankDetails.setAccountName(farmerKycDTO.getAccountName());
-        bankDetails.setAccountNumber(farmerKycDTO.getAccountNumber());
-        bankDetails.setBankName(farmerKycDTO.getBankName());
-        bankDetails.setBranchName(farmerKycDTO.getBranchName());
-        bankDetails.setPanNumber(farmerKycDTO.getPanNumber());
-        bankDetails.setPanCardImagePath(farmerKycDTO.getPanCardImagePath());
         bankDetails.setEsewaId(farmerKycDTO.getEsewaId());
+        bankDetails.setEsewaQrImagePath(farmerKycDTO.getEsewaQrImagePath());
         farmerKyc.setBankDetails(bankDetails);
 
         farmerRepo.save(farmerKyc);

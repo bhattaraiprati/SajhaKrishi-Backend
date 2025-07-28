@@ -3,17 +3,23 @@ package com.example.sajhaKrishi.Services.farmer;
 import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
+import com.example.sajhaKrishi.Services.buyer.OrderService;
 import com.example.sajhaKrishi.repository.ProductRepository;
 import com.example.sajhaKrishi.repository.UserRepo;
+import lombok.extern.flogger.Flogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
     private final ProductRepository productRepository;
 
 
@@ -59,7 +65,29 @@ public class ProductService {
 
     // Method to get all products
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        String status = "Active";
+
+        List<Product> products = productRepository.findAllByStatus(status);
+        List<Product> availableProducts = new ArrayList<>();
+
+        for (Product product : products) {
+            // Check if available quantity is less than minimum order quantity
+            if (product.getQuantity() < product.getMinimumOrderQuantity()) {
+                // Update status to "Pause" and set available to false
+                product.setStatus("Pause");
+                product.setAvailable(false);
+                productRepository.save(product);
+
+                logger.info("Product {} status changed to Pause due to insufficient quantity. " +
+                                "Available: {}, Minimum required: {}",
+                        product.getName(), product.getQuantity(), product.getMinimumOrderQuantity());
+            } else {
+                // Only add products that meet minimum quantity requirements
+                availableProducts.add(product);
+            }
+        }
+
+        return availableProducts;
     }
 
     // Method to get product by ID
@@ -77,6 +105,12 @@ public class ProductService {
     public Product updateProduct(String id, ProductDTO productDetails) {
         Product existingProduct = productRepository.findById(id).orElse(null);
         if (existingProduct != null) {
+
+            // Validate status change before applying updates
+            if (productDetails.getStatus() != null) {
+                validateStatusChange(existingProduct, productDetails.getStatus(), productDetails);
+            }
+
             // Only update fields that are not null
             if (productDetails.getName() != null) {
                 existingProduct.setName(productDetails.getName());
@@ -124,11 +158,61 @@ public class ProductService {
                 existingProduct.setStatus(productDetails.getStatus());
             }
 
+            // Only auto-update status if status wasn't manually set
+            if (productDetails.getStatus() == null) {
+                checkAndUpdateProductStatus(existingProduct);
+            }
+
             return productRepository.save(existingProduct);
         }
         return null;
     }
 
+    private void validateStatusChange(Product existingProduct, String newStatus, ProductDTO productDetails) {
+        // Check if trying to activate a product
+        if ("Active".equalsIgnoreCase(newStatus) &&
+                (!"Active".equalsIgnoreCase(existingProduct.getStatus()))) {
+
+            // Get the current quantity (use updated quantity if provided, otherwise existing)
+            Integer currentQuantity = productDetails.getQuantity() != null ?
+                    productDetails.getQuantity() : existingProduct.getQuantity();
+
+            // Get the minimum order quantity (use updated value if provided, otherwise existing)
+            Integer minimumOrderQuantity = productDetails.getMinimumOrderQuantity() != null ?
+                    productDetails.getMinimumOrderQuantity() : existingProduct.getMinimumOrderQuantity();
+
+            // Validate quantity requirements
+            if (currentQuantity < minimumOrderQuantity) {
+                throw new IllegalArgumentException(
+                        String.format("Cannot activate product '%s'. Available quantity (%d) is less than minimum order quantity (%d). " +
+                                        "Please increase the available quantity to at least %d or decrease the minimum order quantity to %d or less.",
+                                existingProduct.getName(), currentQuantity, minimumOrderQuantity, minimumOrderQuantity, currentQuantity)
+                );
+            }
+        }
+    }
+
+    private void checkAndUpdateProductStatus(Product product) {
+        // If quantity is less than minimum order quantity, pause the product
+        if (product.getQuantity() < product.getMinimumOrderQuantity()) {
+            product.setStatus("Pause");
+            product.setAvailable(false);
+
+            logger.info("Product {} automatically paused due to insufficient quantity. " +
+                            "Available: {}, Minimum required: {}",
+                    product.getName(), product.getQuantity(), product.getMinimumOrderQuantity());
+        }
+        // If quantity is sufficient and product was paused due to quantity, reactivate it
+        else if (product.getQuantity() >= product.getMinimumOrderQuantity() &&
+                "Pause".equals(product.getStatus())) {
+            product.setStatus("Active");
+            product.setAvailable(true);
+
+            logger.info("Product {} reactivated due to sufficient quantity. " +
+                            "Available: {}, Minimum required: {}",
+                    product.getName(), product.getQuantity(), product.getMinimumOrderQuantity());
+        }
+    }
     // Method to delete a product
     public void deleteProduct(String id) {
         productRepository.deleteById(id);

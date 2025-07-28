@@ -15,7 +15,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -129,15 +131,30 @@ public ResponseEntity<ProductDTO> createProduct(
         }
     }
 
-    @PatchMapping("/farmer/product/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id,
-                                                 @RequestBody ProductDTO productDetails, Authentication authentication) {
 
-        Product updatedProduct = productService.updateProduct(id, productDetails);
-        if (updatedProduct != null) {
-            return ResponseEntity.ok(updatedProduct);
+    // Updated Controller
+    @PatchMapping("/farmer/product/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable String id,
+                                           @RequestBody ProductDTO productDetails,
+                                           Authentication authentication) {
+        try {
+            Product updatedProduct = productService.updateProduct(id, productDetails);
+            if (updatedProduct != null) {
+                return ResponseEntity.ok(updatedProduct);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            // Return error message for validation failures
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("error", "VALIDATION_ERROR");
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An unexpected error occurred");
+            errorResponse.put("error", "INTERNAL_ERROR");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/api/farmer/deleteProduct/{id}")

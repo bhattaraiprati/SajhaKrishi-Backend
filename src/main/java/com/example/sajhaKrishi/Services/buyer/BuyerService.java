@@ -49,7 +49,7 @@ public class BuyerService {
         kyc.setFullName(dto.getFullName());
         kyc.setPhoneNumber(dto.getPhoneNumber());
         kyc.setEmail(dto.getEmail());
-        kyc.setDateofBirth(dto.getDateofBirth()); // Note: keeping original field name from entity
+        kyc.setDateOfBirth(dto.getDateOfBirth()); // Note: keeping original field name from entity
         kyc.setGender(dto.getGender());
         kyc.setProfilePhotoPath(dto.getProfilePhotoPath());
         kyc.setProvince(dto.getProvince());
@@ -59,10 +59,8 @@ public class BuyerService {
         kyc.setStreetAddress(dto.getStreetAddress());
         kyc.setLandmark(dto.getLandmark());
         kyc.setCitizenshipNumber(dto.getCitizenshipNumber());
-        kyc.setCitizenshipFrontImagePath(dto.getCitizenshipFrontImagePath());
-        kyc.setCitizenshipBackImagePath(dto.getCitizenshipBackImagePath());
+        kyc.setBusinessRegistrationImagePath(dto.getBusinessRegistrationImagePath());
         kyc.setPanNumber(dto.getPanNumber());
-        kyc.setPanCardImagePath(dto.getPanCardImagePath());
 
         // Fetch and set User entity
         if (dto.getUserId() != 0) {

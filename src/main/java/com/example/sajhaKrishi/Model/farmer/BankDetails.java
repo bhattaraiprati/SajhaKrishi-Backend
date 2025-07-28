@@ -8,13 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BankDetails {
-
-    private String accountName;
-    private String accountNumber;
-    private String bankName;
-    private String branchName;
-    private String panNumber;
-    private String panCardImagePath;
+    private String esewaQrImagePath;
     private String esewaId;
-    private String khaltiId;
 }

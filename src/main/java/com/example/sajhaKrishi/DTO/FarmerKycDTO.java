@@ -18,8 +18,6 @@ public class FarmerKycDTO {
     private String gender;
     private String citizenshipNumber;
     private String citizenshipIssuedDistrict;
-    private String citizenshipFrontImagePath;
-    private String citizenshipBackImagePath;
     private String permanentAddress;
     private String province;
     private String district;
@@ -28,10 +26,10 @@ public class FarmerKycDTO {
     private String tole;
     private String kycStatus; // Added for KYC status tracking
     private Boolean verified; // Added for verification status
+    private  String rejectionReason;
 
     // Farm Details
     private String farmName;
-    private String description;
     private String farmSize;
     private String farmSizeUnit;
     private String primaryCrops;
@@ -41,17 +39,12 @@ public class FarmerKycDTO {
     private Integer yearsOfExperience;
     private String farmingType;
     private String certifications;
-    private String supportingDocsPath;
 
     // Bank Details
-    private String accountName;
-    private String accountNumber;
-    private String bankName;
-    private String branchName;
-    private String panNumber;
-    private String panCardImagePath;
+
     private String esewaId;
-    private String khaltiId;
+    private String esewaQrImagePath;
+    private String profileImagePath;
 
     // Constructor
     public FarmerKycDTO(FarmerKyc farmerKyc) {
@@ -66,8 +59,6 @@ public class FarmerKycDTO {
         this.gender = farmerKyc.getGender();
         this.citizenshipNumber = farmerKyc.getCitizenshipNumber();
         this.citizenshipIssuedDistrict = farmerKyc.getCitizenshipIssuedDistrict();
-        this.citizenshipFrontImagePath = farmerKyc.getCitizenshipFrontImagePath();
-        this.citizenshipBackImagePath = farmerKyc.getCitizenshipBackImagePath();
         this.permanentAddress = farmerKyc.getPermanentAddress();
         this.province = farmerKyc.getProvince();
         this.district = farmerKyc.getDistrict();
@@ -76,11 +67,12 @@ public class FarmerKycDTO {
         this.tole = farmerKyc.getTole();
         this.kycStatus = farmerKyc.getKycStatus();
         this.verified = farmerKyc.getVerified();
+        this.rejectionReason = farmerKyc.getRejectionReason();
+        this.profileImagePath = farmerKyc.getProfileImagePath();
 
         // Farm Details
         if (farmerKyc.getFarmDetails() != null) {
             this.farmName = farmerKyc.getFarmDetails().getFarmName();
-            this.description = farmerKyc.getFarmDetails().getDescription();
             this.farmSize = farmerKyc.getFarmDetails().getFarmSize();
             this.farmSizeUnit = farmerKyc.getFarmDetails().getFarmSizeUnit();
             this.primaryCrops = farmerKyc.getFarmDetails().getPrimaryCrops();
@@ -92,19 +84,12 @@ public class FarmerKycDTO {
             this.yearsOfExperience = farmerKyc.getExperienceDetails().getYearsOfExperience();
             this.farmingType = farmerKyc.getExperienceDetails().getFarmingType();
             this.certifications = farmerKyc.getExperienceDetails().getCertifications();
-            this.supportingDocsPath = farmerKyc.getExperienceDetails().getSupportingDocsPath();
         }
 
         // Bank Details
         if (farmerKyc.getBankDetails() != null) {
-            this.accountName = farmerKyc.getBankDetails().getAccountName();
-            this.accountNumber = farmerKyc.getBankDetails().getAccountNumber();
-            this.bankName = farmerKyc.getBankDetails().getBankName();
-            this.branchName = farmerKyc.getBankDetails().getBranchName();
-            this.panNumber = farmerKyc.getBankDetails().getPanNumber();
-            this.panCardImagePath = farmerKyc.getBankDetails().getPanCardImagePath();
+            this.esewaQrImagePath = farmerKyc.getBankDetails().getEsewaQrImagePath();
             this.esewaId = farmerKyc.getBankDetails().getEsewaId();
-            this.khaltiId = farmerKyc.getBankDetails().getKhaltiId();
         }
     }
 

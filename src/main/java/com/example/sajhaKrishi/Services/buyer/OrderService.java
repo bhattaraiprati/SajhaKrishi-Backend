@@ -1,13 +1,18 @@
 package com.example.sajhaKrishi.Services.buyer;
 
+import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
 import com.example.sajhaKrishi.DTO.order.*;
+import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.Model.order.*;
+import com.example.sajhaKrishi.Services.farmer.ProductService;
 import com.example.sajhaKrishi.repository.OrderRepository;
 import com.example.sajhaKrishi.util.SignatureUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -24,6 +29,9 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     private static final String ESEWA_GATEWAY_URL = "https://rc-epay.esewa.com.np";
@@ -31,6 +39,7 @@ public class OrderService {
     private static final String SUCCESS_URL = "http://localhost:8080/api/orders/success";
     private static final String FAILURE_URL = "http://localhost:8080/api/orders/failure";
 
+    @Transactional
     public Order createOrder(OrderDTO orderDTO) {
         Order order = Order.builder()
                 .userId(orderDTO.getUserId())
@@ -42,8 +51,39 @@ public class OrderService {
                 .items(convertToOrderItems(orderDTO.getItems()))
                 .payment(convertToPayment(orderDTO.getPayment()))
                 .build();
-        logger.info("Creating order for userId: {}, transactionUuid: {}", orderDTO.getUserId(), orderDTO.getTransactionUuid());
-        return orderRepository.save(order);
+
+
+//        logger.info("Creating order for userId: {}, transactionUuid: {}", orderDTO.getUserId(), orderDTO.getTransactionUuid());
+
+        Order repoOrder = orderRepository.save(order);
+        // Update product quantities
+        updateProductQuantities(orderDTO.getItems());
+
+        return repoOrder;
+    }
+
+    private void updateProductQuantities(List<OrderItemDTO> items) {
+        for (OrderItemDTO item : items) {
+            Product product = productService.getProductById(item.getProductId().toString());
+            if (product != null) {
+                int newQuantity = product.getQuantity() - item.getQuantity();
+
+                // Update the product quantity
+                ProductDTO updateDTO = new ProductDTO();
+                updateDTO.setQuantity(newQuantity);
+
+                // If quantity becomes 0, mark as unavailable
+                if (newQuantity <= 0) {
+                    updateDTO.setAvailable(false);
+                    updateDTO.setQuantity(0);
+                }
+
+                productService.updateProduct(product.getId().toString(), updateDTO);
+
+                logger.info("Updated product {} quantity from {} to {}",
+                        product.getName(), product.getQuantity(), newQuantity);
+            }
+        }
     }
 
     public List<Order> getOrdersByUserId(Long userId) {

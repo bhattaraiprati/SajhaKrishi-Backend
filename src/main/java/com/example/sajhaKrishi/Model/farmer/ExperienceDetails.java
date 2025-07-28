@@ -12,5 +12,4 @@ public class ExperienceDetails {
     private Integer yearsOfExperience;
     private String farmingType; // "Organic", "Traditional", etc.
     private String certifications;
-    private String supportingDocsPath;
 }

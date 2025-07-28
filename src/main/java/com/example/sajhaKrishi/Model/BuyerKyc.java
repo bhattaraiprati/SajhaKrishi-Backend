@@ -33,7 +33,7 @@ public class BuyerKyc {
 
     @NotNull
     @Column(unique = true)
-    private String DateofBirth;
+    private String dateOfBirth;
 
     private String gender;
     private String profilePhotoPath;
@@ -44,11 +44,9 @@ public class BuyerKyc {
     private String streetAddress;
     private String landmark;
     private String citizenshipNumber;
-    private String citizenshipFrontImagePath;
-    private String citizenshipBackImagePath;
     private String panNumber;
-    private String panCardImagePath;
 
+    private String businessRegistrationImagePath;
     // New fields for KYC status
     private String kycStatus = "PENDING"; // Default to PENDING
     private Boolean verified = false; // Default to false

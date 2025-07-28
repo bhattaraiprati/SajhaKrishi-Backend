@@ -10,7 +10,6 @@ import lombok.Setter;
 public class FarmDetails {
 
     private String farmName;
-    private String description;
     private String farmSize; // In Ropani/Hectares
     private String farmSizeUnit; // "Ropani" or "Hectares"
     private String primaryCrops; // Comma-separated values

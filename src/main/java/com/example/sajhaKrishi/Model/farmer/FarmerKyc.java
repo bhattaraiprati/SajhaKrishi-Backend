@@ -28,14 +28,13 @@ public class FarmerKyc {
     private String gender;
     private String citizenshipNumber;
     private String citizenshipIssuedDistrict;
-    private String citizenshipFrontImagePath;
-    private String citizenshipBackImagePath;
     private String permanentAddress;
     private String province;
     private String district;
     private String municipality;
     private Integer wardNumber;
     private String tole;
+    private String profileImagePath;
 
 
     // Page 2: Farm & Production Details
@@ -53,5 +52,6 @@ public class FarmerKyc {
     // New fields for KYC status
     private String kycStatus = "PENDING"; // Default to PENDING
     private Boolean verified = false; // Default to false
+    private String rejectionReason;
 
 }

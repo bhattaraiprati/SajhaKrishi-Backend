@@ -42,6 +42,17 @@ public class NotificationService {
         return notification;
     }
 
+    public Notification createNewOrderNotification(Long farmerId, String title, String message, Long orderId) {
+        Notification notification = new Notification(farmerId, title, message, NotificationType.NEW_ORDER);
+        notification.setOrderId(orderId);
+        notification = notificationRepository.save(notification);
+
+        sendRealTimeNotification(notification);
+
+        logger.info("Created new order notification for farmer {} and order {}", farmerId, orderId);
+        return notification;
+    }
+
     public List<Notification> getUserNotifications(Long userId) {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }

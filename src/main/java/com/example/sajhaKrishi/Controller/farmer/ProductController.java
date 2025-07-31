@@ -185,6 +185,12 @@ public ResponseEntity<ProductDTO> createProduct(
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/api/farmer/getProductCount/{id}")
+    public ResponseEntity<Integer> getProductCountById(@ PathVariable Long id){
+        Integer count = productService.getProductCount(id);
+        return ResponseEntity.ok(count);
+    }
+
 
 
 

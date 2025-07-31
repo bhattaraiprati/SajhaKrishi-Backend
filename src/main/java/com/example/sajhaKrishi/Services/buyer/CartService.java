@@ -40,6 +40,7 @@ public class CartService {
                     .productId(cartItemDTO.getProductId())
                     .productName(cartItemDTO.getProductName())
                     .price(cartItemDTO.getPrice())
+                    .discountPercentage(cartItemDTO.getDiscountPercentage())
                     .description(cartItemDTO.getDescription())
                     .quantity(cartItemDTO.getQuantity())
                     .imageUrl(cartItemDTO.getImageUrl())
@@ -146,6 +147,7 @@ public class CartService {
         dto.setProductId(cartItem.getProductId());
         dto.setProductName(cartItem.getProductName());
         dto.setPrice(cartItem.getPrice());
+        dto.setDiscountPercentage(cartItem.getDiscountPercentage());
         dto.setDescription(cartItem.getDescription());
         dto.setQuantity(cartItem.getQuantity());
         dto.setImageUrl(cartItem.getImageUrl());

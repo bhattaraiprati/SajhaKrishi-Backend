@@ -61,6 +61,12 @@ public class OrderController {
         return ResponseEntity.ok(orderDTO);
     }
 
+    @GetMapping("/getFarmerOrder/{id}")
+    public ResponseEntity<?> getOrderByFarmerId(@PathVariable Long id){
+        List<Order> orderDTO = cartService.getOrdersByUserId(id);
+        return ResponseEntity.ok(orderDTO);
+    }
+
     @GetMapping("/getOrder")
     public ResponseEntity<?> getOrderById(Authentication authentication) {
         try {

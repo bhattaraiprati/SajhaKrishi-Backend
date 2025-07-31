@@ -46,6 +46,8 @@ public class CartItem {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    private Integer discountPercentage;
+
     @Column(name = "image_url")
     private String imageUrl;
 

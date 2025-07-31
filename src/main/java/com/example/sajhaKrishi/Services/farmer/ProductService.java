@@ -1,6 +1,7 @@
 package com.example.sajhaKrishi.Services.farmer;
 
 import com.example.sajhaKrishi.DTO.farmer.ProductDTO;
+import com.example.sajhaKrishi.DTO.order.OrderDTO;
 import com.example.sajhaKrishi.Model.User;
 import com.example.sajhaKrishi.Model.farmer.Product;
 import com.example.sajhaKrishi.Services.buyer.OrderService;
@@ -217,6 +218,14 @@ public class ProductService {
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
     }
+
+    public Integer getProductCount(Long id){
+        Integer productCount = productRepository.countById(id);
+
+        return productCount;
+    }
+
+
 
     public List<Product> getProductsByUser(User user) {
         return productRepository.findByUser(user);
